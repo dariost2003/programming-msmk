@@ -1,6 +1,6 @@
 # Talleres Especializados de Python
 
-Repositorio con 4 ejercicios-taller para la fase de especializacion de la asignatura. Cada ejercicio es independiente e incluye codigo base (starter code) que debes ampliar segun las instrucciones.
+Repositorio con 5 ejercicios-taller para la fase de especializacion de la asignatura. Cada ejercicio es independiente e incluye codigo base (starter code) que debes ampliar segun las instrucciones.
 
 ## Ejercicios
 
@@ -10,6 +10,7 @@ Repositorio con 4 ejercicios-taller para la fase de especializacion de la asigna
 | 2 | [Dungeon Crawler](ejercicio-2-juego/) | Desarrollo de juegos en terminal | Alumnos de game dev |
 | 3 | [Lab de Ciberseguridad](ejercicio-3-ciberseguridad/) | Vulnerabilidades web | Alumno de seguridad |
 | 4 | [PokeDex Avanzado](ejercicio-4-pokeapi/) | Consumo de APIs + Buscador | Alumno de APIs |
+| 5 | [Canvas Interactivo](ejercicio-5-canvas/) | App grafica web interactiva | Alumno de UI/frontend |
 
 ## Como empezar
 
