@@ -1,0 +1,13 @@
+# Ejercicio 2: Dungeon Crawler en Terminal
+#
+# Este proyecto solo utiliza la biblioteca estandar de Python.
+# No se necesitan dependencias externas.
+#
+# Modulos utilizados:
+#   - curses (incluido con Python en macOS/Linux)
+#   - random
+#   - dataclasses
+#   - json
+#
+# En Windows, instalar windows-curses:
+#   pip install windows-curses

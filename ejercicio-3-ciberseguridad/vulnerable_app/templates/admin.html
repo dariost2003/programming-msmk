@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Panel de Administracion{% endblock %}
+
+{% block content %}
+<h2>Panel de Administracion</h2>
+<p>Bienvenido al panel de gestion, <strong>{{ session['username'] }}</strong>.</p>
+
+<section class="admin-section">
+    <h3>Usuarios Registrados</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user['id'] }}</td>
+                <td>{{ user['username'] }}</td>
+                <td>{{ user['role'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="admin-section">
+    <h3>Catalogo de Productos</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Descripcion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product['id'] }}</td>
+                <td>{{ product['name'] }}</td>
+                <td>${{ "%.2f"|format(product['price']) }}</td>
+                <td>{{ product['description'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
