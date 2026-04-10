@@ -35,8 +35,11 @@ Lee las instrucciones completas en `INSTRUCCIONES.md`. En resumen:
 
 1. **Scripts de deteccion** - Identificar vulnerabilidades automaticamente
 2. **Scripts de explotacion** - Demostrar el impacto de cada vulnerabilidad
-3. **Aplicacion parcheada** - Corregir todas las vulnerabilidades
-4. **Reporte de seguridad** - Documentar hallazgos usando `plantilla_reporte.md`
+3. **Escaner de vulnerabilidades** - Herramienta CLI reutilizable que ejecute todos los tests
+4. **WAF (Web Application Firewall)** - Middleware de proteccion con rate limiting, deteccion de inyecciones y logging
+5. **Aplicacion parcheada** - Corregir todas las vulnerabilidades + integrar el WAF
+6. **Reporte de seguridad** - Documentar hallazgos usando `plantilla_reporte.md`
+7. **BONUS: Dashboard de monitoreo** - Panel web para visualizar ataques detectados por el WAF en tiempo real
 
 ## Estructura de entrega esperada
 
@@ -51,8 +54,16 @@ entrega/
             explotar_vuln_1.py
             explotar_vuln_2.py
             ...
+    scanner/
+        scanner.py          (herramienta CLI principal)
+        tests/              (modulos de tests individuales)
+    waf/
+        waf_middleware.py    (middleware Flask)
+        test_waf.py          (tests unitarios del WAF)
     patched_app/
-        (copia corregida de vulnerable_app/)
+        (copia corregida de vulnerable_app/ con WAF integrado)
+    dashboard/              (BONUS)
+        app.py
     reporte.md
 ```
 

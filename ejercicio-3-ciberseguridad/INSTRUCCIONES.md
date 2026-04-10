@@ -36,14 +36,41 @@ Scripts en Python que demuestren la **explotacion** controlada de cada vulnerabi
 - Mostrar el impacto potencial
 - Incluir comentarios explicando cada paso
 
-### 3. Aplicacion parcheada (`patched_app/`)
-Una copia de la aplicacion con **todas** las vulnerabilidades corregidas. Cada correccion debe:
+### 3. Escaner de vulnerabilidades (`scanner/`)
+Una herramienta CLI reutilizable que reciba la URL base de cualquier aplicacion web y ejecute automaticamente todas las pruebas de seguridad que hayas desarrollado. El escaner debe:
+- Aceptar una URL base como argumento: `python scanner.py http://127.0.0.1:5000`
+- Ejecutar todos los tests de deteccion en secuencia
+- Mostrar un resumen con codigo de colores en terminal (rojo=critico, amarillo=medio, verde=sin hallazgo)
+- Generar un reporte automatico en formato Markdown con los resultados
+- Ser extensible: cada test debe ser una funcion o clase independiente, de modo que anadir un nuevo test sea sencillo
+- Manejar errores de conexion y timeouts de forma elegante
+
+### 4. WAF (Web Application Firewall) basico (`waf/`)
+Un middleware Flask que actue como capa de proteccion frente a ataques comunes. Debe:
+- Funcionar como un middleware que se inserta en la aplicacion parcheada
+- Detectar y bloquear intentos de SQL Injection (patrones comunes en parametros)
+- Detectar y bloquear intentos de XSS (etiquetas HTML/script en inputs)
+- Detectar y bloquear intentos de Path Traversal (secuencias `../` en rutas)
+- Implementar rate limiting basico (limitar peticiones por IP por minuto)
+- Registrar todos los intentos bloqueados en un archivo de log (`waf_log.json`)
+- Devolver una respuesta HTTP 403 con mensaje descriptivo cuando bloquee un ataque
+- Incluir al menos 5 tests unitarios que demuestren que el WAF bloquea ataques reales
+
+### 5. Aplicacion parcheada (`patched_app/`)
+Una copia de la aplicacion con **todas** las vulnerabilidades corregidas y el WAF integrado. Cada correccion debe:
 - Eliminar la vulnerabilidad sin romper la funcionalidad
 - Seguir buenas practicas de seguridad
 - Incluir comentarios explicando por que se hizo el cambio
+- Tener el WAF activado como capa de defensa adicional
 
-### 4. Reporte de seguridad (`reporte.md`)
+### 6. Reporte de seguridad (`reporte.md`)
 Un reporte profesional documentando todo el proceso. Usa la plantilla proporcionada en `plantilla_reporte.md`.
+
+### BONUS: Dashboard de monitoreo de seguridad (`dashboard/`)
+**(Opcional, puntos extra)** Un panel web que muestre en tiempo real los intentos de ataque detectados por el WAF. Puede usar Streamlit, Flask con templates, o cualquier otra libreria. Deberia mostrar:
+- Log de ataques bloqueados en tiempo real
+- Graficas de ataques por tipo y por IP
+- Estadisticas generales (total bloqueados, tipo mas frecuente, IPs mas activas)
 
 ---
 
