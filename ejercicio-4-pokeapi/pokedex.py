@@ -29,8 +29,8 @@ def generador_grafico_radial(pokemon):
         'hp': 'puntos de vida',
         'attack':'ataque',
         'defense':'defensa',
-        'sp-attack':'ataque especial',
-        'sp-defense':'defensa especial',
+        'sp-attack':'ataque sp',
+        'sp-defense':'defensa sp',
         'speed':'velocidad'
     }
     
@@ -52,7 +52,7 @@ def generador_grafico_radial(pokemon):
 
     fig.update_layout(
         polar=dict(
-            radialaxis=dict(visible=True, range=[0,250])
+            radialaxis=dict(visible=True, range=[0,180])
         ),
         showlegend=False,
         title=dict(text=f'Estadisticas de {pokemon.name.capitalize()}', x=0.5),
@@ -84,17 +84,17 @@ def main():
                 with col1:
                     if pokemon.sprite_url:
                         st.image(pokemon.sprite_url, width=True)
-                    st.subheader(f'**#{pokemon.id}**-{pokemon.name.capitalize()}')
+                    st.subheader(f'**#{pokemon.id}** - {pokemon.name.capitalize()}')
 
                     tipos_texto = '/'.join(t.capitalize() for t in pokemon.types)
-                    st.markdown(f'**Tipos**{tipos_texto}')
+                    st.markdown(f'**Tipos:** {tipos_texto}')
 
-                    st.markdown(f'**Altura:**{pokemon.height/10:.1f} m')
-                    st.markdown(f'**Peso**{pokemon.weight / 10:.1f} m')
-                    st.markdown(f'**Exp. Base**{pokemon.base_experience}') 
+                    st.markdown(f'**Altura:** {pokemon.height/10:.1f} m')
+                    st.markdown(f'**Peso:** {pokemon.weight / 10:.1f} m')
+                    st.markdown(f'**Exp. Base:** {pokemon.base_experience}') 
 
                     habilidades = ','.join(a.replace('-','').capitalize() for a in pokemon.abilities)
-                    st.markdown(f'**Habilidades**:{habilidades}')
+                    st.markdown(f'**Habilidades:** {habilidades}')
 
                 with col2:
                     fig = generador_grafico_radial(pokemon)
