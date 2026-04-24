@@ -22,7 +22,7 @@ COLORES_TIPO_POKEMON = {
 }
 
 def generador_grafico_radial(pokemon):
-    stats_map = {s['stat']['name']:s['base_stat'] for s in pokemon['stats']}
+    stats_map = {s.name: s.base_stat for s in pokemon.stats}
 
     tipo_pokemon = pokemon.types[0].lower()
     colores_hexadecimales = COLORES_TIPO_POKEMON.get(tipo_pokemon, '#333333')
