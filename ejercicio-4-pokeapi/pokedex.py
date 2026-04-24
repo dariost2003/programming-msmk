@@ -29,12 +29,12 @@ def generador_grafico_radial(pokemon):
         'hp': 'puntos de vida',
         'attack':'ataque',
         'defense':'defensa',
-        'sp-attack':'ataque sp',
-        'sp-defense':'defensa sp',
+        'sp_attack':'ataque sp',
+        'sp_defense':'defensa sp',
         'speed':'velocidad'
     }
     
-    orden = ['hp','attack','defense','sp-attack','sp-defense','speed']
+    orden = ['hp','attack','defense','sp_attack','sp_defense','speed']
     labels = [nombres.get(s, s) for s in orden]
     values = [pokemon.stats.get(s, 0) for s in orden]
     
