@@ -83,7 +83,7 @@ def main():
 
                 with col1:
                     if pokemon.sprite_url:
-                        st.image(pokemon.sprite_url, width=True)
+                        st.image(pokemon.sprite_url, width=300)
                     st.subheader(f'**#{pokemon.id}** - {pokemon.name.capitalize()}')
 
                     tipos_texto = '/'.join(t.capitalize() for t in pokemon.types)
