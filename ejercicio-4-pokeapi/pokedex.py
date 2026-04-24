@@ -54,8 +54,8 @@ def generador_grafico_radial(pokemon):
         polar=dict(
             radialaxis=dict(visible=True, range=[0,250])
         ),
-        showlegend=False
-        title=dict(text=f'Estadisticas de {pokemon.name.capitalize()}', x=0.5)
+        showlegend=False,
+        title=dict(text=f'Estadisticas de {pokemon.name.capitalize()}', x=0.5),
         margin=dict(l=40,r=40,t=40,b=40)
     )
     return fig
