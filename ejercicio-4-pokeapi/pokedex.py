@@ -22,10 +22,8 @@ COLORES_TIPO_POKEMON = {
 }
 
 def generador_grafico_radial(pokemon):
-    stats_map = {s.name: s.base_stat for s in pokemon.stats}
-
-    tipo_pokemon = pokemon.types[0].lower()
-    colores_hexadecimales = COLORES_TIPO_POKEMON.get(tipo_pokemon, '#333333')
+    
+    colores_hexadecimales = COLORES_TIPO_POKEMON.get(pokemon.types[0], '#fb1b1b')
     
     nombres = {
         'hp': 'puntos de vida',
@@ -38,7 +36,7 @@ def generador_grafico_radial(pokemon):
     
     orden = ['hp','attack','defense','sp-attack','sp-defense','speed']
     labels = [nombres.get(s, s) for s in orden]
-    values = [stats_map.get(s, 0) for s in orden]
+    values = [pokemon.stats.get(s, 0) for s in orden]
     
 
     fig = go.Figure()
@@ -47,19 +45,18 @@ def generador_grafico_radial(pokemon):
         r=values + [values[0]],
         theta= labels + [labels[0]],
         fill='toself',
-        fillcolor=f'rgba{tuple(int(colores_hexadecimales.lstrip("#")[i:i+2],16) for i in (0, 2, 4))+ (0.5,)}',
-        line=dict(color=colores_hexadecimales, width=3),
+        fillcolor=f'rgba(251, 27, 27, 0.3)',
+        line=dict(color=colores_hexadecimales, width=2),
         name=pokemon.name.capitalize()
     ))
 
     fig.update_layout(
         polar=dict(
-            radialaxis=dict(visible=True, range=[0,250], gridcolor= '#eee'),
-            angularaxis=dict(gridcolor='#eee')
+            radialaxis=dict(visible=True, range=[0,250])
         ),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bdcolor='rbga(0,0,0,0)',
-        title=dict(text=f'Perfil de {pokemon.name.capitalize()}', front=dict(color=colores_hexadecimales))
+        showlegend=False
+        title=dict(text=f'Estadisticas de {pokemon.name.capitalize()}', x=0.5)
+        margin=dict(l=40,r=40,t=40,b=40)
     )
     return fig
 
