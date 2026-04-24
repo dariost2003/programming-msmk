@@ -45,7 +45,7 @@ def generador_grafico_radial(pokemon):
         r=values + [values[0]],
         theta= labels + [labels[0]],
         fill='toself',
-        fillcolor= "#ffffff00",
+        fillcolor= f'rgba(251, 27, 27, 0.3)',
         line=dict(color=colores_hexadecimales), width=3,
         name=pokemon.name.capitalize()
     ))
