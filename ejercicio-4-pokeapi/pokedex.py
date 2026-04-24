@@ -45,14 +45,14 @@ def generador_grafico_radial(pokemon):
         r=values + [values[0]],
         theta= labels + [labels[0]],
         fill='toself',
-        fillcolor=f'rgba(251, 27, 27, 0.3)',
-        line=dict(color=colores_hexadecimales, width=2),
+        fillcolor=dict(color=colores_hexadecimales, width=3),
+        line=f'rgba(251, 27, 27, 0.3)',
         name=pokemon.name.capitalize()
     ))
 
     fig.update_layout(
         polar=dict(
-            radialaxis=dict(visible=True, range=[0,180])
+            radialaxis=dict(visible=True, range=[0,160])
         ),
         showlegend=False,
         title=dict(text=f'Estadisticas de {pokemon.name.capitalize()}', x=0.5),
