@@ -66,7 +66,7 @@ def generador_grafico_radial(pokemon):
 def main():
     st.set_page_config(page_title='PokeDex', page_icon='◓')
 
-    st.title('PokeDex')
+    st.title('◓ PokeDex')
     st.caption('Busca tu pokemon favorito, aprende stats, forma equipos, compara pokemones')
 
     client = get_client()
@@ -74,10 +74,10 @@ def main():
     nombre = st.text_input(
         'Nombre del Pokemon',
         placeholder='ej: pikachu, charmander, bulbasour'
-    )
+    ).lower().strip()
 
     if st.button('Buscar', type='primary') and nombre:
-        with st.spinner('Consultando PokeAPI...'):
+        with st.spinner('Consultando datos...'):
             try:
                 data= client.get_pokemon(nombre)
                 pokemon = parse_pokemon(data)
@@ -86,8 +86,8 @@ def main():
 
                 with col1:
                     if pokemon.sprite_url:
-                        st.image(pokemon.sprite_url, width=300)
-                    st.markdown(f'**#{pokemon.id}**-{pokemon.name.capitalize()}')
+                        st.image(pokemon.sprite_url, width=True)
+                    st.subheader(f'**#{pokemon.id}**-{pokemon.name.capitalize()}')
 
                     tipos_texto = '/'.join(t.capitalize() for t in pokemon.types)
                     st.markdown(f'**Tipos**{tipos_texto}')
@@ -100,7 +100,7 @@ def main():
                     st.markdown(f'**Habilidades**:{habilidades}')
 
                 with col2:
-                    fig = generador_grafico_radial(pokemon.stats)
+                    fig = generador_grafico_radial(pokemon)
                     st.plotly_chart(fig, use_container_width=True)
 
             except ValueError as e:
@@ -111,12 +111,12 @@ def main():
                 st.error(f'Error inesperado: {e}')
 
     with st.sidebar:
-        st.header('Pokemones encontrados')
-        stats = client.cache.stats()
-        st.metric('Encontrados', stats['hits'])
-        st.metric('No encontrados', stats['misses'])
-        st.metric('Tasa de aciertos', f'{stats['hit_rate']:.1%}') 
-        st.metric('Entradas validas', stats['valid_entries']) 
+        st.header('Estado del sistema')
+        c_stats = client.cache.stats()
+        st.metric('Encontrados', c_stats['hits'])
+        st.metric('No encontrados', c_stats['misses'])
+        st.metric('Tasa de aciertos', f'{c_stats["hit_rate"]:.1%}') 
+        st.metric('Entradas validas', c_stats['valid_entries']) 
 
         if st.button('Limpiar cache'):
             client.cache.clear()
