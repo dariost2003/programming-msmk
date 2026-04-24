@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
-import pandas as pd
+
 
 from api_client import PokeAPIClient
 from models import parse_pokemon
@@ -9,49 +9,57 @@ from models import parse_pokemon
 def get_client():
     return PokeAPIClient()
 
-def generador_grafico_radial(pokemon_data):
-    stats_map = {s['stat']['name']:s['base_stat'] for s in pokemon_data['stats']}
+COLORES_TIPO_POKEMON = {
+    'fire':'#ff421c','water':'#2c9be3',
+    'grass':'#78cc55', 'electric':'#ffd333',
+    'ice':'#7ac7ff', 'fighting':'#bb5544', 
+    'poison':'#aa5599', 'ground':'#ddbb55',
+    'flying':'#8899ff','psychic':'#ff5599',
+    'bug':'#aabb22', 'rock':'#bbaa66',
+    'ghost':'#6666bb', 'dragon':'#7766ee',
+    'dark':'#775544', 'steel':'#aaaabb',
+    'fairy':'#ee99ee', 'normal':'#aaaa99'
+}
 
-    categories = ['hp','attack','defense','sp_attack','sp_defense','speed']
+def generador_grafico_radial(pokemon):
+    stats_map = {s['stat']['name']:s['base_stat'] for s in pokemon['stats']}
+
+    tipo_pokemon = pokemon.types[0].lower()
+    colores_hexadecimales = COLORES_TIPO_POKEMON.get(tipo_pokemon, '#333333')
     
     nombres = {
         'hp': 'puntos de vida',
         'attack':'ataque',
         'defense':'defensa',
-        'sp_attack':'ataque especial',
-        'sp_defense':'defensa especial',
+        'sp-attack':'ataque especial',
+        'sp-defense':'defensa especial',
         'speed':'velocidad'
     }
-    colores = {
-        'hp': '#B5FFB6',
-        'attack':'#FFB5B5',
-        'defense':'#9EA3FF',
-        'sp_attack':'#FF4F4F',
-        'sp_defense':'#5777FA',
-        'speed': '#F3FF85'
-    }
-
-    orden = ['hp','attack','defense','sp_attack','sp_defense','speed']
+    
+    orden = ['hp','attack','defense','sp-attack','sp-defense','speed']
     labels = [nombres.get(s, s) for s in orden]
-    values = [stats.get(s, 0) for s in orden]
-    colors = [colores.get(s, '#888') for s in orden]
+    values = [stats_map.get(s, 0) for s in orden]
+    
 
     fig = go.Figure()
 
     fig.add_trace(go.Scatterpolar(
         r=values + [values[0]],
-        theta=nombres + [nombres[0]],
+        theta= labels + [labels[0]],
         fill='toself',
-        name=pokemon_data['name'].capitalize(),
-        line_color='#000000'
+        fillcolor=f'rgba{tuple(int(colores_hexadecimales.lstrip("#")[i:i+2],16) for i in (0, 2, 4))+ (0.5,)}',
+        line=dict(color=colores_hexadecimales, width=3),
+        name=pokemon.name.capitalize()
     ))
 
     fig.update_layout(
         polar=dict(
-            radialaxis=dict(visible=True, range[0,255])
+            radialaxis=dict(visible=True, range=[0,250], gridcolor= '#eee'),
+            angularaxis=dict(gridcolor='#eee')
         ),
-        showlegend=False,
-        tittle=f'Stats de {pokemon_data['name'].upper()}'
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bdcolor='rbga(0,0,0,0)',
+        title=dict(text=f'Perfil de {pokemon.name.capitalize()}', front=dict(color=colores_hexadecimales))
     )
     return fig
 
@@ -115,7 +123,7 @@ def main():
             st.success('Cache limpiado')
             st.rerun()
 
-if __name__ == 'main':
+if __name__ == '__main__':
     main()
 
 
