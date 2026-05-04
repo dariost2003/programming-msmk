@@ -107,8 +107,8 @@ def carta_pokemon(pokemon, colores_hexadecimales):
             </div>
 
             <!-- Imagen Principal -->
-            <div class='card-image-box' style='background: radia-gradient(circle, {rgba_fondo} 0%, rgba(255, 255, 255, 0.8) 100%);'>
-                <img src='{pokemon.sprite.url}' alt='{pokemon.name}'>
+            <div class='card-image-box' style='background: radia-gradient(circle, {rgba_fondo} 0%, #fff 100%);'>
+                <img src='{pokemon.sprite_url}' alt='{pokemon.name}'>
             </div>
 
             <!-- Info Box: Tipo y Peso -->
