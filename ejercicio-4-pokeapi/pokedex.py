@@ -108,19 +108,19 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         position: relative;
         overflow: hidden;
-        border: 2px solid #e0c068;
+        border: 4px solid #e0c068;
         margin: auto;
     }}   
     .card-background-pattern {{
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
         background: radial-gradient(circle at 50% 30%, {rgba_brillo}, transparent 70%),
-                    radial-conic-gradient(from 0deg, rgba(255, 255, 255, 0.1) 0deg 20deg, transparent 20deg 40deg);
+                    repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.1) 0deg 20deg, transparent 20deg 40deg);
         z-index: 1;
     }}
     .card-content {{
         position: relative;
-        z-index: 10;
+        z-index: 2;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -134,11 +134,21 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         justify-content: center;
         align-items: center;
         border-radius: 5px;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1)
     }}
     .inner-image-box img {{
         width: 180px;
         z-index: 11;
         filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
+    }}
+    .stats-box {{
+        background: rgba(255, 255, 255, 0.9);
+        margin 5px;
+        padding: 10px;
+        border-radius: 5px;
+        flex-grow: 1;
+        color: #111;
+        font-family: sans-serif;
     }}
 </style>
 <div class='card-canvas'>
@@ -155,8 +165,8 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         </div>
         <!-- Cuerpo de la carta-->
         <div class='stats-container'>
-            <p style='font-size: 0.7em; font-weight: bold; margin: 0; color: #666;'>HABILIDADES</p>
-            <p style= 'font-size: 0.9em; font-weight: bold; margin-bottom: 12px; color: #111'>
+            <p style='font-size: 0.9em; font-weight: bold; margin: 0; color: #666;'>HABILIDADES</p>
+            <p style= 'font-size: 1.0em; font-weight: bold; margin-bottom: 12px; color: #111'>
                 {', '.join(pokemon.abilities).upper().replace('-', ' ')}
             </p>                                
             <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85em; font-family: monospace;'>
@@ -164,8 +174,6 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
                 <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
                 <div><b>VEL:</b> {pokemon.stats.get('speed')}</div>
                 <div><b>EXP:</b> {pokemon.base_experience}</div>
-            </div>
-            <div style='margin-top: 10px; font-size: 0.65em; text-align: center; font-style: italic; color: #888;'>
             </div>
         </div>
     </div>
@@ -191,7 +199,7 @@ def main():
             try:
                 data= client.get_pokemon(nombre)
                 pokemon = parse_pokemon(data)
-                url_shiny = data.get('sprites',{}).get('font_shiny') or pokemon.sprite_url
+                url_shiny = data.get('sprites',{}).get('front_shiny') or pokemon.sprite_url
                 color_tema= COLORES_TIPO_POKEMON.get(pokemon.types[0], '#FF0000')
                 fondo_de_pantalla(color_tema)
 
