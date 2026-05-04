@@ -158,8 +158,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
             <p style='font-size: 0.7em; font-weight: bold; margin: 0; color: #666;'>HABILIDADES</p>
             <p style= 'font-size: 0.9em; font-weight: bold; margin-bottom: 12px; color: #111'>
                 {', '.join(pokemon.abilities).upper().replace('-', ' ')}
-            </p>
-                                   
+            </p>                                
             <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85em; font-family: monospace;'>
                 <div><b>ATK:</b> {pokemon.stats.get('attack')}</div>
                 <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
