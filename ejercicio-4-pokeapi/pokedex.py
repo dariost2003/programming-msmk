@@ -102,7 +102,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
     .card-canvas {{
         width: 340px;
         height: 480px;
-        background: {colores_hexadecimales};
+        background: {hexadecimal_a_rgba(colores_hexadecimales, 0.6)};
         border-radius: 18px;
         padding: 12px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -128,7 +128,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
     .inner-image-box {{
         margin: 5px;
         height: 200px;
-        background: white;
+        background: hexadecimal_a_rgba(colores_hexadecimales[1], 0.6);
         border: 4px solid #b8b8b8;
         display: flex;
         justify-content: center;
@@ -137,14 +137,16 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1)
     }}
     .inner-image-box img {{
-        width: 180px;
+        transform: scale(1.1)
+        height: 160px
+        width: 210px;
         z-index: 11;
         filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
     }}
     .stats-box {{
         background: rgba(255, 255, 255, 0.9);
         margin 5px;
-        padding: 10px;
+        padding: 20px;
         border-radius: 5px;
         flex-grow: 1;
         color: #111;
@@ -157,7 +159,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         <!-- Header -->
         <div style='display: flex; justify-content: space-between; padding: 5px 10px; font-weight: bold; color: white; text-shadow: 1px 1px 3px black; font-family: sans-serif;'>
             <span style='font-size: 1.2em;'>{pokemon.name.upper()}</span>
-            <span style='color: #ffde00; font-size: 1.1em'>HP {pokemon.stats.get('hp', 0)}</span>
+            <span style='color: #fdeec4; font-size: 1.1em'>HP {pokemon.stats.get('hp', 0)}</span>
         </div>
         <!-- Imagen Shiny -->
         <div class='inner-image-box'>
@@ -169,7 +171,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
             <p style= 'font-size: 1.0em; font-weight: bold; margin-bottom: 12px; color: #111'>
                 {', '.join(pokemon.abilities).upper().replace('-', ' ')}
             </p>                                
-            <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85em; font-family: monospace;'>
+            <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 1em; font-family: monospace;'>
                 <div><b>ATK:</b> {pokemon.stats.get('attack')}</div>
                 <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
                 <div><b>VEL:</b> {pokemon.stats.get('speed')}</div>
