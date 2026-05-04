@@ -94,109 +94,80 @@ def generador_grafico_radial(pokemon):
     return fig
 
 def carta_pokemon(pokemon, colores_hexadecimales):
-    rgba_borde = hexadecimal_a_rgba(colores_hexadecimales, 0.6)
-    rgba_fondo = hexadecimal_a_rgba(colores_hexadecimales, 0.1)
+    rgba_brillo = hexadecimal_a_rgba(colores_hexadecimales, 0.8)
+    rgba_fondo = hexadecimal_a_rgba(colores_hexadecimales, 0.2)
 
     carta_html = f"""
-    <div class = 'poke-card-container'>
-        <div class='poke-card' style='border': 4px solid {rgba_borde}; shadow: 0 0 20px {rgba_borde}>
-            <!-- Header: Nombre y HP -->
-            <div class='card-header'>
-                <span class='card-name'>{pokemon.name.upper()}</span>
-                <span class='card-hp'>HP {pokemon.stats.get('hp', 0)}</span>
+<style>
+    .card-canvas {{
+        width: 340px;
+        height: 480px;
+        background: {colores_hexadecimales};
+        border-radius: 18px;
+        padding: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #e0c068;
+        margin: auto;
+    }}   
+    .card-background-pattern {{
+        position: relative;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(2px);
+        height: 100%;
+        border-radius: 10px;
+        display: flex;
+        felx-direction: column;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }}
+    .inner-image-box {{
+        margin: 10px;
+        height: 200px;
+        background: white;
+        border: 4px solid #b8b8b8;
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+    }}
+    .inner-image-box img {{
+        width: 180px;
+        filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.4));
+    }}
+    </style>
+
+    <div class='card-canvas'>
+        <div class='card-background-pattern'></div>
+        <div class='card-conent'>
+            <div style='display: felx; justify-content: space-between; padding: 10px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black;'>
+                <span style='font-size: 1.2em;'>{pokemon.name.upper()}</span>
+                <span style='color: #ffde00;'>HP {pokemon.stats.get('hp', 0)}</span>
             </div>
-            <!-- Imagen Principal -->
-            <div class='card-image-box' style='background: radia-gradient(circle, {rgba_fondo} 0%, #fff 100%);'>
-                <img src='{pokemon.sprite_url}' alt='{pokemon.name}'>
+
+            <div class='inner-image-box'>
+                <img src='{pokemon.sprite_url}'>
             </div>
-            <!-- Info Box: Tipo y Peso -->
-            <div class='card-info-bar'>
-                Pkm {pokemon.types[0].capitalize()} | Altura: {pokemon.height/10}m | Peso: {pokemon.weight/10}kg
-            </div>
-            <!-- Cuerpo: Habilidades y Stats -->
-            <div class='card-body'>
-                <div class-'ability-section'>
-                    <p class='section-tittle'>HABILIDADES</p>
-                    <p class='ability-text'>{', '.join(a.replace('-',' ').upper() for a in pokemon.abilities)}</p>
+
+            <div style='background: rgba(255, 255, 255, 0.85); margin: 0 10px 10px 10px; padding: 10px; border-radius: 5px; flex-grow: 1; color: #222'>
+                <div style='font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; font-size: 0.75em; color: #555;'>
+                    HABILIDADES
                 </div>
-                <hr style='border: 0; border-top: 1px solid {rgba_borde}: margin: 10px 0;'>
-                <div class='stats-grid'>
-                    <div class='stat-item'><b>ATQ:</b> {pokemon.stats.get('attack')}</div>
-                    <div class='stat-item'><b>DEF:</b> {pokemon.stats.get('defense')}</div>
-                    <div class='stat-item'><b>VEL:</b> {pokemon.stats.get('speed')}</div>
-                    <div class='stat-item'><b>EXP:</b> {pokemon.base_experience}</div>
+                <div style='font-size: 0.85em; font-weight: bold;'>
+                    {'/'.join(pokemon.abilities).upper().replace('-',' ')}
+                </div>
+
+                <div style='margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8em;'>
+                    <div><b>ATK:</b> {pokemon.stats.get('attack')}</div>
+                    <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
+                    <div><b>VEL:</b> {pokemon.stats.get('speed')}</div>
+                    <div><b>EXP:</b> {pokemon.base_experience}</div>
                 </div>
             </div>
         </div>
     </div>
-    <style>
-        .poke-card-container {{
-            display: flex;
-            justify-content: center;
-            padding: 40px 0;
-        }}
-        .poke-card {{
-            width: 350px;
-            height: 500 px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 18px;
-            padding: 20px;
-            font-family: 'Verdana', sans-serif;
-            color: #333;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }}
-        .card-header {{
-            display: felx;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }}
-        .card-hp {{
-            color: #d32f2f;
-            font-size: 18px;
-        }}
-        .card-image-box {{
-            width: 100%;
-            height: 200px;
-            border: 3px solid #ddd;
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }}
-        .card-image-box img {{
-            width: 180px;
-            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2)):
-        }}
-        .card-info-bar {{
-            background: #e0e0e0;
-            font-size: 10px;
-            padding: 2px 10px;
-            font-style: italic;
-            margin: 5px 0;
-            text-align: center;
-        }}
-        .section-tittle {{
-            font-size: 12px;
-            font-weight: bold;
-            color: #666;
-            margin-bottom: 2px;
-        }}
-        .ability-text {{
-            font-size: 14px;
-            line-height: 1.2;
-        }}
-        .stats-grid {{
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap 10px;
-            font-size: 13px;
-        }}
-    </style>
     """
     st.markdown(carta_html, unsafe_allow_html=True)
 
