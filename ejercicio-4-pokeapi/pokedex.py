@@ -93,8 +93,8 @@ def generador_grafico_radial(pokemon):
     ) 
     return fig
 
-def carta_pokemon(pokemon, colores_hexadecimales):
-    rgba_brillo = hexadecimal_a_rgba(colores_hexadecimales, 0.8)
+def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
+    rgba_brillo = hexadecimal_a_rgba(colores_hexadecimales, 0.4)
     rgba_fondo = hexadecimal_a_rgba(colores_hexadecimales, 0.2)
 
     carta_html = f"""
@@ -105,29 +105,31 @@ def carta_pokemon(pokemon, colores_hexadecimales):
         background: {colores_hexadecimales};
         border-radius: 18px;
         padding: 12px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         position: relative;
         overflow: hidden;
         border: 2px solid #e0c068;
         margin: auto;
     }}   
     .card-background-pattern {{
-        position: relative;
-        z-index: 2;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(2px);
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: radial-gradient(circle at 50% 30%, {rgba_brillo}, transparent 70%),
+                    radial-conic-gradient(from 0deg, rgba(255, 255, 255, 0.1) 0deg 20deg, transparent 20deg 40deg);
+        z-index: 1;
+    }}
+    .card-content {{
+        position: relativ;
+        z-index: 10;
         height: 100%;
-        border-radius: 10px;
         display: flex;
-        felx-direction: column;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        flex-direction: column;
     }}
     .inner-image-box {{
-        margin: 10px;
+        margin: 5px;
         height: 200px;
         background: white;
         border: 4px solid #b8b8b8;
-        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -135,31 +137,36 @@ def carta_pokemon(pokemon, colores_hexadecimales):
     }}
     .inner-image-box img {{
         width: 180px;
-        filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.4));
+        z-index: 11;
+        filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
     }}
 </style>
 <div class='card-canvas'>
     <div class='card-background-pattern'></div>
     <div class='card-content'>
-        <div style='display: felx; justify-content: space-between; padding: 10px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black;'>
+        <!-- Header -->
+        <div style='display: felx; justify-content: space-between; padding: 5px 10px; font-weight: bold; color: white; text-shadow: 1px 1px 3px black; font-family: sans-serif;'>
             <span style='font-size: 1.2em;'>{pokemon.name.upper()}</span>
-            <span style='color: #ffde00;'>HP {pokemon.stats.get('hp', 0)}</span>
+            <span style='color: #ffde00; font-size: 1.1em'>HP {pokemon.stats.get('hp', 0)}</span>
         </div>
+        <!-- Imagen Shiny -->
         <div class='inner-image-box'>
-            <img src='{pokemon.sprite_url}'>
+            <img src='{url_sprite}'>
         </div>
-        <div style='background: rgba(255, 255, 255, 0.85); margin: 0 10px 10px 10px; padding: 10px; border-radius: 5px; flex-grow: 1; color: #222'>
-            <div style='font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; font-size: 0.75em; color: #555;'>
-                HABILIDADES
-            </div>
-            <div style='font-size: 0.85em; font-weight: bold;'>
-                {'/'.join(pokemon.abilities).upper().replace('-',' ')}
-            </div>
-            <div style='margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8em;'>
+        <!-- Cuerpo de la carta--
+        <div class='stats-container'>
+            <p style='font-size: 0.7em; font-weight: bold; margin: 0; color: #666;'>HABILIDADES</p>
+            <p style= 'font-size: 0.9em; font-weight: bold; margin-bottom: 12px; color: #111'>
+                {', '.join(pokemon.abilities).upper().replace('-', ' ')}
+            </p>
+                                   
+            <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85em; font-family: monospace;'>
                 <div><b>ATK:</b> {pokemon.stats.get('attack')}</div>
                 <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
                 <div><b>VEL:</b> {pokemon.stats.get('speed')}</div>
                 <div><b>EXP:</b> {pokemon.base_experience}</div>
+            </div>
+            <div style='margin-top: 10px; font-size: 0.65em; text-align: center; font-style: italic; color: #888;'>
             </div>
         </div>
     </div>
@@ -185,6 +192,7 @@ def main():
             try:
                 data= client.get_pokemon(nombre)
                 pokemon = parse_pokemon(data)
+                url_shiny = data.get('sprites',{}).get('font_shiny') or pokemon.sprite_url
                 color_tema= COLORES_TIPO_POKEMON.get(pokemon.types[0], '#FF0000')
                 fondo_de_pantalla(color_tema)
 
@@ -214,7 +222,7 @@ def main():
 
                 st.divider()
                 st.subheader('🎴 Carta coleccionable')
-                carta_pokemon(pokemon, color_tema)
+                carta_pokemon(pokemon, color_tema, url_shiny)
 
             except ValueError as e:
                 st.error(f'No se encontro el Pokemon: {e}')
