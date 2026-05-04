@@ -98,7 +98,7 @@ def carta_pokemon(pokemon, colores_hexadecimales):
     rgba_fondo = hexadecimal_a_rgba(colores_hexadecimales, 0.1)
 
     carta_html = f"""
-    <div class = 'poke-card-conainer'>
+    <div class = 'poke-card-container'>
         <div class='poke-card' style='border': 4px solid {rgba_borde}; shadow: 0 0 20px {rgba_borde}>
             <!-- Header: Nombre y HP -->
             <div class='card-header'>
@@ -250,7 +250,7 @@ def main():
                     st.plotly_chart(fig, use_container_width=True)
 
                 st.divider()
-                st.subheader('Carta coleccionable')
+                st.subheader('🎴 Carta coleccionable')
                 carta_pokemon(pokemon, color_tema)
 
             except ValueError as e:
