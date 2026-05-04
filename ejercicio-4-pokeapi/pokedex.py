@@ -98,73 +98,73 @@ def carta_pokemon(pokemon, colores_hexadecimales):
     rgba_fondo = hexadecimal_a_rgba(colores_hexadecimales, 0.2)
 
     carta_html = f"""
-        <style>
-            .card-canvas {{
-                width: 340px;
-                height: 480px;
-                background: {colores_hexadecimales};
-                border-radius: 18px;
-                padding: 12px;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.2);
-                position: relative;
-                overflow: hidden;
-                border: 2px solid #e0c068;
-                margin: auto;
-            }}   
-            .card-background-pattern {{
-                position: relative;
-                z-index: 2;
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(2px);
-                height: 100%;
-                border-radius: 10px;
-                display: flex;
-                felx-direction: column;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-            }}
-            .inner-image-box {{
-                margin: 10px;
-                height: 200px;
-                background: white;
-                border: 4px solid #b8b8b8;
-                box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border-radius: 5px;
-            }}
-            .inner-image-box img {{
-                width: 180px;
-                filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.4));
-            }}
-            </style>
-            <div class='card-canvas'>
-                <div class='card-background-pattern'></div>
-                <div class='card-conent'>
-                    <div style='display: felx; justify-content: space-between; padding: 10px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black;'>
-                        <span style='font-size: 1.2em;'>{pokemon.name.upper()}</span>
-                        <span style='color: #ffde00;'>HP {pokemon.stats.get('hp', 0)}</span>
-                    </div>
-                    <div class='inner-image-box'>
-                        <img src='{pokemon.sprite_url}'>
-                    </div>
-                    <div style='background: rgba(255, 255, 255, 0.85); margin: 0 10px 10px 10px; padding: 10px; border-radius: 5px; flex-grow: 1; color: #222'>
-                        <div style='font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; font-size: 0.75em; color: #555;'>
-                            HABILIDADES
-                        </div>
-                        <div style='font-size: 0.85em; font-weight: bold;'>
-                            {'/'.join(pokemon.abilities).upper().replace('-',' ')}
-                        </div>
-                        <div style='margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8em;'>
-                            <div><b>ATK:</b> {pokemon.stats.get('attack')}</div>
-                            <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
-                            <div><b>VEL:</b> {pokemon.stats.get('speed')}</div>
-                            <div><b>EXP:</b> {pokemon.base_experience}</div>
-                        </div>
-                    </div>
-                </div>
+<style>
+    .card-canvas {{
+        width: 340px;
+        height: 480px;
+        background: {colores_hexadecimales};
+        border-radius: 18px;
+        padding: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 0 50px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid #e0c068;
+        margin: auto;
+    }}   
+    .card-background-pattern {{
+        position: relative;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(2px);
+        height: 100%;
+        border-radius: 10px;
+        display: flex;
+        felx-direction: column;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }}
+    .inner-image-box {{
+        margin: 10px;
+        height: 200px;
+        background: white;
+        border: 4px solid #b8b8b8;
+        box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+    }}
+    .inner-image-box img {{
+        width: 180px;
+        filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.4));
+    }}
+</style>
+<div class='card-canvas'>
+    <div class='card-background-pattern'></div>
+    <div class='card-content'>
+        <div style='display: felx; justify-content: space-between; padding: 10px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black;'>
+            <span style='font-size: 1.2em;'>{pokemon.name.upper()}</span>
+            <span style='color: #ffde00;'>HP {pokemon.stats.get('hp', 0)}</span>
+        </div>
+        <div class='inner-image-box'>
+            <img src='{pokemon.sprite_url}'>
+        </div>
+        <div style='background: rgba(255, 255, 255, 0.85); margin: 0 10px 10px 10px; padding: 10px; border-radius: 5px; flex-grow: 1; color: #222'>
+            <div style='font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; font-size: 0.75em; color: #555;'>
+                HABILIDADES
             </div>
-            """
+            <div style='font-size: 0.85em; font-weight: bold;'>
+                {'/'.join(pokemon.abilities).upper().replace('-',' ')}
+            </div>
+            <div style='margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8em;'>
+                <div><b>ATK:</b> {pokemon.stats.get('attack')}</div>
+                <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
+                <div><b>VEL:</b> {pokemon.stats.get('speed')}</div>
+                <div><b>EXP:</b> {pokemon.base_experience}</div>
+            </div>
+        </div>
+    </div>
+</div>
+"""
     st.markdown(carta_html, unsafe_allow_html=True)
 
 def main():
