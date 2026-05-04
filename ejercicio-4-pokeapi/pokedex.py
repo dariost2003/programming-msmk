@@ -105,17 +105,14 @@ def carta_pokemon(pokemon, colores_hexadecimales):
                 <span class='card-name'>{pokemon.name.upper()}</span>
                 <span class='card-hp'>HP {pokemon.stats.get('hp', 0)}</span>
             </div>
-
             <!-- Imagen Principal -->
             <div class='card-image-box' style='background: radia-gradient(circle, {rgba_fondo} 0%, #fff 100%);'>
                 <img src='{pokemon.sprite_url}' alt='{pokemon.name}'>
             </div>
-
             <!-- Info Box: Tipo y Peso -->
             <div class='card-info-bar'>
                 Pkm {pokemon.types[0].capitalize()} | Altura: {pokemon.height/10}m | Peso: {pokemon.weight/10}kg
             </div>
-
             <!-- Cuerpo: Habilidades y Stats -->
             <div class='card-body'>
                 <div class-'ability-section'>
@@ -132,7 +129,6 @@ def carta_pokemon(pokemon, colores_hexadecimales):
             </div>
         </div>
     </div>
-
     <style>
         .poke-card-container {{
             display: flex;
@@ -202,7 +198,7 @@ def carta_pokemon(pokemon, colores_hexadecimales):
         }}
     </style>
     """
-    st.markdown('<h1>PRUEBA</h1>', unsafe_allow_html=True)
+    st.markdown(carta_html, unsafe_allow_html=True)
 
 def main():
     st.set_page_config(page_title='PokeDex', page_icon='◓', layout='wide')
