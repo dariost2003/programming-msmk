@@ -138,7 +138,6 @@ def carta_pokemon(pokemon, colores_hexadecimales):
         filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.4));
     }}
     </style>
-
     <div class='card-canvas'>
         <div class='card-background-pattern'></div>
         <div class='card-conent'>
@@ -146,11 +145,9 @@ def carta_pokemon(pokemon, colores_hexadecimales):
                 <span style='font-size: 1.2em;'>{pokemon.name.upper()}</span>
                 <span style='color: #ffde00;'>HP {pokemon.stats.get('hp', 0)}</span>
             </div>
-
             <div class='inner-image-box'>
                 <img src='{pokemon.sprite_url}'>
             </div>
-
             <div style='background: rgba(255, 255, 255, 0.85); margin: 0 10px 10px 10px; padding: 10px; border-radius: 5px; flex-grow: 1; color: #222'>
                 <div style='font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; font-size: 0.75em; color: #555;'>
                     HABILIDADES
@@ -158,7 +155,6 @@ def carta_pokemon(pokemon, colores_hexadecimales):
                 <div style='font-size: 0.85em; font-weight: bold;'>
                     {'/'.join(pokemon.abilities).upper().replace('-',' ')}
                 </div>
-
                 <div style='margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.8em;'>
                     <div><b>ATK:</b> {pokemon.stats.get('attack')}</div>
                     <div><b>DEF:</b> {pokemon.stats.get('defense')}</div>
