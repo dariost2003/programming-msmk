@@ -57,12 +57,12 @@ def generador_grafico_radial(pokemon):
         color_secundario = color_principal
 
     nombres = {
-        'hp': 'puntos de vida',
-        'attack':'ataque',
-        'defense':'defensa',
-        'sp_attack':'ataque sp',
-        'sp_defense':'defensa sp',
-        'speed':'velocidad'
+        'hp': 'HP',
+        'attack':'Ataque',
+        'defense':'Defensa',
+        'sp_attack':'Ataque sp',
+        'sp_defense':'Defensa sp',
+        'speed':'Velocidad'
     }
     
     orden = ['hp','attack','defense','sp_attack','sp_defense','speed']
@@ -92,6 +92,117 @@ def generador_grafico_radial(pokemon):
         margin = dict(t=30, b=30, l=40, r=40)
     ) 
     return fig
+
+def carta_pokemon(pokemon, colores_hexadecimales):
+    rgba_borde = hexadecimal_a_rgba(colores_hexadecimales, 0.6)
+    rgba_fondo = hexadecimal_a_rgba(colores_hexadecimales, 0.1)
+
+    carta_html = f"""
+    <div class = 'poke-card-conainer'>
+        <div class='poke-card' style='border': 4px solid {rgba_borde}; shadow: 0 0 20px {rgba_borde}>
+            <!-- Header: Nombre y HP -->
+            <div class='card-header'>
+                <span class='card-name'>{pokemon.name.upper()}</span>
+                <span class='card-hp'>HP {pokemon.stats.get('hp', 0)}</span>
+            </div>
+
+            <!-- Imagen Principal -->
+            <div class='card-image-box' style='background: radia-gradient(circle, {rgba_fondo} 0%, rgba(255, 255, 255, 0.8) 100%);'>
+                <img src='{pokemon.sprite.url}' alt='{pokemon.name}'>
+            </div>
+
+            <!-- Info Box: Tipo y Peso -->
+            <div class='card-info-bar'>
+                Pkm {pokemon.tyopes[0].capitalize()} | Altura: {pokemon.height/10}m | Peso: {pokemon.weight/10}kg
+            </div>
+
+            <!-- Cuerpo: Habilidades y Stats -->
+            <div class='card-body'>
+                <div class-'ability-section'>
+                    <p class='section-tittle'>HABILIDADES</p>
+                    <p class='ability-text'>{', '.join(a.replace('-',' ').upper() for a in pokemon.abilities)}</p>
+                </div>
+                <hr style='border: 0; border-top: 1px solid {rgba_borde}: margin: 10px 0;'>
+                <div class='stats-grid'>
+                    <div class='stat-item'><b>ATQ:</b> {pokemon.stats.get('attack')}</div>
+                    <div class='stat-item'><b>DEF:</b> {pokemon.stats.get('defense')}</div>
+                    <div class='stat-item'><b>VEL:</b> {pokemon.stats.get('speed')}</div>
+                    <div class='stat-item'><b>EXP:</b> {pokemon.base_experience}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .poke-card-container {{
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+        }}
+        .poke-card {{
+            width: 350px;
+            height: 500 px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            padding: 20px;
+            font-family: 'Verdana', sans-serif;
+            color: #333;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }}
+        .card-header {{
+            display: felx;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }}
+        .card-hp {{
+            color: #d32f2f;
+            font-size: 18px;
+        }}
+        .card-image-box {{
+            width: 100%;
+            height: 200px;
+            border: 3px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }}
+        .card-image-box img {{
+            width: 180px;
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2)):
+        }}
+        .card-info-bar {{
+            background: #e0e0e0;
+            font-size: 10px;
+            padding: 2px 10px;
+            font-style: italic;
+            margin: 5px 0;
+            text-align: center;
+        }}
+        .section-tittle {{
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 2px;
+        }}
+        .ability-text {{
+            font-size: 14px;
+            line-height: 1.2;
+        }}
+        .stats-grid {{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap 10px;
+            font-size: 13px;
+        }}
+    </style>
+    """
+    st.markdown(carta_html, unsafe_allow_html=True)
 
 def main():
     st.set_page_config(page_title='PokeDex', page_icon='◓', layout='wide')
@@ -137,6 +248,10 @@ def main():
                     st.subheader("Análisis de Estadisticas")
                     fig = generador_grafico_radial(pokemon)
                     st.plotly_chart(fig, use_container_width=True)
+
+                st.divider()
+                st.subheader('Carta coleccionable')
+                carta_pokemon(pokemon, color_tema)
 
             except ValueError as e:
                 st.error(f'No se encontro el Pokemon: {e}')
