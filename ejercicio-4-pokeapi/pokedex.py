@@ -119,7 +119,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         z-index: 1;
     }}
     .card-content {{
-        position: relativ;
+        position: relative;
         z-index: 10;
         height: 100%;
         display: flex;
@@ -145,7 +145,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
     <div class='card-background-pattern'></div>
     <div class='card-content'>
         <!-- Header -->
-        <div style='display: felx; justify-content: space-between; padding: 5px 10px; font-weight: bold; color: white; text-shadow: 1px 1px 3px black; font-family: sans-serif;'>
+        <div style='display: flex; justify-content: space-between; padding: 5px 10px; font-weight: bold; color: white; text-shadow: 1px 1px 3px black; font-family: sans-serif;'>
             <span style='font-size: 1.2em;'>{pokemon.name.upper()}</span>
             <span style='color: #ffde00; font-size: 1.1em'>HP {pokemon.stats.get('hp', 0)}</span>
         </div>
@@ -153,7 +153,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         <div class='inner-image-box'>
             <img src='{url_sprite}'>
         </div>
-        <!-- Cuerpo de la carta--
+        <!-- Cuerpo de la carta-->
         <div class='stats-container'>
             <p style='font-size: 0.7em; font-weight: bold; margin: 0; color: #666;'>HABILIDADES</p>
             <p style= 'font-size: 0.9em; font-weight: bold; margin-bottom: 12px; color: #111'>
