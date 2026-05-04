@@ -113,7 +113,7 @@ def carta_pokemon(pokemon, colores_hexadecimales):
 
             <!-- Info Box: Tipo y Peso -->
             <div class='card-info-bar'>
-                Pkm {pokemon.tyopes[0].capitalize()} | Altura: {pokemon.height/10}m | Peso: {pokemon.weight/10}kg
+                Pkm {pokemon.types[0].capitalize()} | Altura: {pokemon.height/10}m | Peso: {pokemon.weight/10}kg
             </div>
 
             <!-- Cuerpo: Habilidades y Stats -->
