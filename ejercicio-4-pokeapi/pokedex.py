@@ -128,7 +128,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
     .inner-image-box {{
         margin: 5px;
         height: 200px;
-        background: hexadecimal_a_rgba(colores_hexadecimales[1], 0.6);
+        background: {hexadecimal_a_rgba(colores_hexadecimales[1], 0.6)};
         border: 4px solid #b8b8b8;
         display: flex;
         justify-content: center;
@@ -137,7 +137,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1)
     }}
     .inner-image-box img {{
-        transform: scale(1.1)
+        transform: scale(1.2)
         height: 160px
         width: 210px;
         z-index: 11;
