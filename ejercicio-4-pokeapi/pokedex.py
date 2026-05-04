@@ -202,7 +202,7 @@ def carta_pokemon(pokemon, colores_hexadecimales):
         }}
     </style>
     """
-    st.markdown(carta_html, unsafe_allow_html=True)
+    st.markdown('<h1>PRUEBA</h1>', unsafe_allow_html=True)
 
 def main():
     st.set_page_config(page_title='PokeDex', page_icon='◓', layout='wide')
