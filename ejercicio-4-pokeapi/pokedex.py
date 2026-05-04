@@ -94,6 +94,11 @@ def generador_grafico_radial(pokemon):
     return fig
 
 def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
+    if len(pokemon.types) >1:
+        color_contraste_fondo = COLORES_TIPO_POKEMON.get(pokemon.types[1], colores_hexadecimales)
+    else:
+        color_contraste_fondo = '#333333'
+    
     rgba_brillo = hexadecimal_a_rgba(colores_hexadecimales, 0.4)
     rgba_fondo = hexadecimal_a_rgba(colores_hexadecimales, 0.2)
 
@@ -128,24 +133,24 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
     .inner-image-box {{
         margin: 5px;
         height: 200px;
-        background: {hexadecimal_a_rgba(colores_hexadecimales[1], 0.6)};
-        border: 4px solid #b8b8b8;
+        background: {hexadecimal_a_rgba(color_contraste_fondo, 0.5)};
+        border: 4px solid rgba(255, 255, 255, 0.3);
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 5px;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1)
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4)
     }}
     .inner-image-box img {{
-        transform: scale(1.2)
-        height: 160px
+        transform: scale(1.2);
+        height: 160px;
         width: 210px;
         z-index: 11;
         filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
     }}
     .stats-box {{
         background: rgba(255, 255, 255, 0.9);
-        margin 5px;
+        margin: 5px;
         padding: 20px;
         border-radius: 5px;
         flex-grow: 1;
