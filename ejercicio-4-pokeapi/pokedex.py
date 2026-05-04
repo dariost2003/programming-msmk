@@ -142,7 +142,7 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
         box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4)
     }}
     .inner-image-box img {{
-        transform: scale(1.4);
+        transform: scale(2.9);
         height: 160px;
         width: 210px;
         z-index: 11;
