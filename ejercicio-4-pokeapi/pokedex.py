@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
+import json
 
 
 from api_client import PokeAPIClient
@@ -44,7 +45,7 @@ def fondo_de_pantalla(colores_hexadecimales):
                border: 1px solid {hexadecimal_a_rgba(colores_hexadecimales, 0.2)};
                backdrop-filter: blur(5px)
            }}
-    <style>
+    </style>
     '''
     st.markdown(css, unsafe_allow_html=True)
 
@@ -188,7 +189,16 @@ def carta_pokemon(pokemon, colores_hexadecimales, url_sprite):
 """
     st.markdown(carta_html, unsafe_allow_html=True)
 
+@st.cache_data
+def cargar_minibiblioteca():
+    try:
+        with open('datos_basicos_filtro.json', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return[]
+        
 def main():
+     
     st.set_page_config(page_title='PokeDex', page_icon='◓', layout='wide')
 
     st.title('◓ PokeDex')
@@ -237,7 +247,7 @@ def main():
                 st.divider()
                 st.subheader('🎴 Carta coleccionable')
                 carta_pokemon(pokemon, color_tema, url_shiny)
-
+                
             except ValueError as e:
                 st.error(f'No se encontro el Pokemon: {e}')
             except ConnectionError as e:
@@ -245,18 +255,59 @@ def main():
             except Exception as e:
                 st.error(f'Error inesperado: {e}')
 
-    with st.sidebar:
-        st.header('Estado del sistema')
-        c_stats = client.cache.stats()
-        st.metric('Encontrados', c_stats['hits'])
-        st.metric('No encontrados', c_stats['misses'])
-        st.metric('Tasa de aciertos', f'{c_stats["hit_rate"]:.1%}') 
-        st.metric('Entradas validas', c_stats['valid_entries']) 
+    
 
-        if st.button('Limpiar memoria cache'):
-            client.cache.clear()
-            st.success('Cache limpiado')
-            st.rerun()
+    with st.sidebar:
+        st.header('🔍 Filtros Avanzados')
+        
+        tipo = st.multiselect('Tipo', list(COLORES_TIPO_POKEMON.keys()))
+
+        generaciones = {
+            'Todas': (1,1025),
+            '1ra Gen (Kanto)': (1, 151),
+            '2da Gen (Johto)': (152, 251),
+            '3ra Gen (Hoenn)': (252, 386),
+            '4ta Gen (Sinnoh)': (387, 493),
+            '5ta Gen (Unova)': (494, 649)
+        }
+
+        generaciones_seleccionador = st.selectbox('Generacion', list(generaciones.keys()))
+        rango_id = generaciones[generaciones_seleccionador]
+
+        ataque_minimo = st.slider('Ataque minimo', 0, 200, 0)
+        hp_minimo = st.slider('HP minimo', 0, 200, 0)
+        defensa_minima = st.slider('Defensa Minima', 0, 200, 0)
+        velocidad_minima = st.slider('Velocidad Minima', 0, 200, 0)
+        min_base_exp = st.slider('Min_base_exp', 0, 200, 0)
+        
+    minibiblioteca = cargar_minibiblioteca()
+    if not minibiblioteca:
+        st.warning(f"No se encontró el archivo. Por favor ejecuta el script de 'pokemon_filter_seed.py' primero")
+        return
+        
+    datos_filtrados = [
+        p for p in minibiblioteca
+        if (not tipo or any(t in p['types'] for t in tipo)) and
+        (rango_id[0] <= p['id'] <= rango_id[1]) and
+        (p['atk'] >= ataque_minimo) and
+        (p['hp'] >= hp_minimo) and
+        (p['def'] >= defensa_minima) and
+        (p['speed'] >= velocidad_minima) and
+        (p['base_exp'] >= min_base_exp)
+    ]
+
+    if not datos_filtrados:
+        st.error(f'No se encuentra un Pokemon que coincida con los filtros.')
+    else:
+        cols = st.columns(5)
+        for i, p in enumerate(datos_filtrados[:50]):
+            with cols[i % 5]:
+                st.image(p['sprite'], caption=f"#{p['id']} {p['name'].capitalize()}")
+                if st.button('Ver Detalle', key=f"btn_{p['id']}", use_container_width=True):
+                    st.session_state.pokemon_id = p['name']
+                    st.rerun()
+                if st.session_state.get('pokemon_id'):
+                    st.divider()
 
 
 if __name__ == '__main__':
