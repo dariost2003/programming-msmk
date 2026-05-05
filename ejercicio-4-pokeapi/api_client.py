@@ -49,9 +49,17 @@ class PokeAPIClient:
             requests.exceptions.ConnectionError: Si no hay conexion a internet.
             requests.exceptions.Timeout: Si la peticion tarda demasiado.
         """
-        # Construir URL completa
-        url = self.base_url + endpoint.strip("/")
+        #Añadir una funcion que acepte URLs completas
 
+        if endpoint.startswith('http'):
+            url = endpoint
+        else:             
+        # Construir URL completa
+            url = self.base_url + endpoint.strip("/")
+        
+        #Añadimos raise ValueError para evitar URLs externas
+        if endpoint.startswith('http') and not endpoint.startswith(self.base_url):
+            raise ValueError("URL externa no permitida")
         # Intentar obtener del cache primero
         cached = self.cache.get(url)
         if cached is not None:
@@ -68,7 +76,7 @@ class PokeAPIClient:
             response.raise_for_status()
             data = response.json()
         except requests.exceptions.HTTPError as e:
-            if response.status_code == 404:
+            if e.response.status_code == 404:
                 raise ValueError(
                     f"No se encontro el recurso: {endpoint}. "
                     "Verifica que el nombre o ID sea correcto."
@@ -108,6 +116,7 @@ class PokeAPIClient:
             Diccionario con todos los datos del Pokemon.
             Usa models.parse_pokemon() para convertirlo a PokemonDetail.
         """
+        #identifier= para poder nombrar en nuestra pokedex ya sea name or id
         identifier = str(name_or_id).lower().strip()
         return self.get(f"pokemon/{identifier}")
 

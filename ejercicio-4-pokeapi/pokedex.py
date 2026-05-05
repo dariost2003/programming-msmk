@@ -22,6 +22,123 @@ COLORES_TIPO_POKEMON = {
     'fairy':'#ee99ee', 'normal':'#aaaa99'
 }
 
+TABLA_DE_INTERACCIONES = {
+    'normal': {'resist': ['ghost'], 'weak': ['fighting']},
+    'fire': {'resist':['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], 'weak': ['water', 'ground', 'rock']},
+    'water': {'resist':['fire', 'water', 'ice', 'steel'], 'weak': ['grass', 'electric']},
+    'grass': {'resist': ['water', 'ground', 'electric'], 'weak': ['fire', 'ice', 'poison', 'bug', 'flying']},
+    'electric': {'resist': ['electric', 'flying', 'steel'], 'weak': ['ground']},
+    'ice': {'resist': ['ice'], 'weak': ['fire', 'fighting', 'rock', 'steel']},
+    'fighting': {'resist': ['bug', 'rock', 'dark'], 'weak': ['flying', 'psychic', 'fairy']},
+    'poison': {'resist': ['grass', 'fighting', 'poison', 'bug', 'fairy'], 'weak': ['ground', 'psychic']},
+    'ground': {'resist': ['poison', 'rock'], 'weak': ['water', 'grass', 'ice'], 'inmune': ['electric']},
+    'flying': {'resist': ['grass', 'fighting', 'bug'], 'weak': ['electric', 'ice', 'rock'], 'inmune': ['ground']},
+    'psychic': {'resist': ['flying', 'psychic'], 'weak': ['bug', 'ghost', 'dark']},
+    'bug': {'resist': ['grass', 'fighting', 'ground'], 'weak': ['fire', 'flying', 'rock']},
+    'rock': {'resist': ['normal', 'fire', 'poison', 'flying'], 'weak': ['water', 'grass', 'fighting', 'ground', 'steel']},
+    'ghost': {'resist': ['poison', 'bug'], 'weak': ['ghost', 'dark'], 'inmune': ['normal', 'fighting']},
+    'dragon': {'resist': ['fire', 'water', 'grass', 'electric'], 'weak': ['ice', 'dragon', 'fairy']},
+    'dark': {'resist': ['ghost', 'dark'], 'weak': ['fighting', 'bug', 'fairy'], 'inmune': ['psychic']},
+    'steel': {'resist': ['normal', 'grass', 'ice', 'flying', 'psychic', 'bug', 'rock', 'dragon', 'steel', 'fairy'], 'weak': ['fire', 'fighting', 'ground'], 'inmune': ['poison']},
+    'fairy': {'resist': ['fighting', 'bug', 'dark'], 'weak': ['poison', 'steel'], 'inmune': ['dragon']}
+}
+
+def interacciones(tipos):
+    multiplicadores = {t: 1.0 for t in TABLA_DE_INTERACCIONES.keys()}
+    for t in tipos:
+        data = TABLA_DE_INTERACCIONES.get(t, {})
+        for w in data.get('weak', []): multiplicadores[w] *= 2.0 
+        for r in data.get('resist', []): multiplicadores[r] *= 0.5
+        for i in data.get('inmune', []): multiplicadores[i] *= 0.0
+    return multiplicadores
+
+def clasificar_defensas(defensas):
+    if not isinstance(defensas, dict):
+        raise TypeError('Se esperaba un dict en defensas')
+    
+    categorias = {
+        'muy_debil': [],
+        'debil': [],
+        'neutral': [],
+        'resiste': [],
+        'muy_resiste': [],
+        'inmune': []
+    }
+    for tipo, mult in defensas.items():
+        if abs(mult - 4.0) < 0.01:
+            categorias['muy_debil'].append((tipo, mult))
+        elif abs(mult - 2.0) < 0.01:
+            categorias['debil'].append((tipo,mult))
+        elif abs(mult - 1.0) < 0.01:
+            categorias['neutral'].append((tipo,mult))
+        elif abs(mult - 0.5) < 0.01:
+            categorias['resiste'].append((tipo,mult))
+        elif abs(mult - 0.25) < 0.01:
+            categorias['muy_resiste'].append((tipo,mult))
+        elif abs(mult - 0.0) < 0.01:
+            categorias['inmune'].append((tipo,mult))
+    
+    return categorias
+    
+
+def render_categoria(titulo, lista, icono):
+    if not lista:
+        return
+    st.markdown(f'###{icono} {titulo}')
+
+    html = ""
+    lista = sorted(lista, key=lambda x: x[0])
+    for tipo, mult in lista:
+        color = COLORES_TIPO_POKEMON.get(tipo, '#888')
+        label = tipo.upper()
+        if mult != 1.0:
+            label += f" x{int(mult) if mult >= 1 else mult}"
+
+        html += f"""
+        <span style='
+            background-color: {color};
+            color: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            margin: 4px;
+            display: inline-block;
+            font-weight: normal;
+            font-size: 0.85em;
+        '>
+            {label}
+        </span>
+        """
+        
+    st.markdown(html, unsafe_allow_html=True)
+
+def cadena_evolutiva(client, pokemon_name):
+    st.subheader('🧬 Cadena Evolutiva')
+    try:
+        species_data = client.get_species(pokemon_name)
+        evolucion_url = species_data['evolution_chain']['url']
+        evolucion_data = client.get(evolucion_url)
+        chain = evolucion_data['chain']
+        evoluciones = []
+        
+        def extraer_nombres(nodo):
+            evoluciones.append(nodo['species']['name'])
+            for sig in nodo['evolves_to']:
+                extraer_nombres(sig)
+
+        extraer_nombres(chain)       
+        
+        cols = st.columns(len(evoluciones))
+        for idx, name in enumerate(evoluciones):
+            with cols[idx]:
+                p_data = client.get_pokemon(name)
+                sprite = p_data['sprites']['front_default']
+                st.image(sprite, width=100)
+                if st.button(name.capitalize(), key=f'btn_evo_{name}'):
+                    st.session_state.pokemon_seleccionado = name
+                    st.rerun()
+    except Exception as e:
+        print(f'Informacion evolutiva no disponible. Error: {e}')
+
 def hexadecimal_a_rgba(colores_hexadecimales, alpha):
     hex_color = colores_hexadecimales.lstrip('#')
     r, g, b = tuple(int(hex_color[i:i+2],16) for i in (0, 2, 4))
@@ -225,17 +342,20 @@ def main():
             try:
                 data= client.get_pokemon(st.session_state.pokemon_seleccionado)
                 pokemon = parse_pokemon(data)
+                species_data = client.get_species(st.session_state.pokemon_seleccionado)
                 url_shiny = data.get('sprites',{}).get('front_shiny') or pokemon.sprite_url
+                descripcion_pokemon = next((f['flavor_text'] for f in species_data['flavor_text_entries'] if f['language']['name'] in ['es', 'en']),"")
+                descripcion_limpia = descripcion_pokemon.replace('\n', ' ').replace('\f', ' ').replace('\r', ' ')
                 color_tema= COLORES_TIPO_POKEMON.get(pokemon.types[0], '#FF0000')
                 fondo_de_pantalla(color_tema)
 
-                col1, col2 = st.columns([1,2], gap='large')
+                col1, col2, col3 = st.columns([1.8,3.0,1.5], gap='medium')
 
                 with col1:
                     if pokemon.sprite_url:
                         st.image(pokemon.sprite_url, width=300)
                     st.header(f'**#{pokemon.id}** - {pokemon.name.capitalize()}')
-
+                    st.markdown(f"> *{descripcion_limpia}*")                 
                     st.write('**Tipos**')
                     cols_tipos = st.columns(len(pokemon.types))
                     for i, t in enumerate(pokemon.types):
@@ -252,6 +372,29 @@ def main():
                     st.subheader("Análisis de Estadisticas")
                     fig = generador_grafico_radial(pokemon)
                     st.plotly_chart(fig, use_container_width=True)
+                
+                with col3:
+                    st.subheader('Efectividad en Combate')
+                    defensas = interacciones(pokemon.types)
+                    categorias = clasificar_defensas(defensas)
+                    orden = [
+                        ('muy_debil', "🔥 Muy debil (x4 daño recibido)"),
+                        ('debil',  "⚠️ Débil (x2 daño recibido)"),
+                        ('resiste', "🛡️ Resiste (x0.5 daño recibido)"),
+                        ('muy_resiste', "🧱 Muy resistente (x0.25 daño recibido)"),
+                        ('inmune', "🚫 Muy resistente (x0.0 daño recibido)")
+                    ]                      
+                    for clave, titulo in orden:
+                        render_categoria(titulo, categorias[clave], "")
+                                                         
+
+                                              
+
+                   
+                                   
+                st.divider()                
+                cadena_evolutiva(client, pokemon.name)
+                
 
                 st.divider()
                 st.subheader('🎴 Carta coleccionable')
