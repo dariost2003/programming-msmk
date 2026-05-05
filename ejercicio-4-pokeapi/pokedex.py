@@ -198,7 +198,10 @@ def cargar_minibiblioteca():
         return[]
         
 def main():
-     
+
+    if 'pokemon_seleccionado' not in st.session_state:
+        st.session_state.pokemon_seleccionado = None
+    
     st.set_page_config(page_title='PokeDex', page_icon='◓', layout='wide')
 
     st.title('◓ PokeDex')
@@ -207,14 +210,20 @@ def main():
     client = get_client()
 
     nombre = st.text_input(
-        'Nombre del Pokemon',
-        placeholder='ej: pikachu, charmander, bulbasour'
-    ).lower().strip()
-
-    if st.button('Buscar', type='primary') and nombre:
+        'Buscar Pokemon', key='barra de busqueda').lower().strip()
+    
+    boton_busqueda = st.button('Buscar', type = 'primary')
+    
+    if boton_busqueda and nombre:
+        st.session_state.pokemon_seleccionado = nombre
+    if st.session_state.pokemon_seleccionado:
+        if st.button('Volver a galeria'):
+            st.session_state.pokemon_seleccionado = None
+            st.rerun()
+            
         with st.spinner('Consultando datos...'):
             try:
-                data= client.get_pokemon(nombre)
+                data= client.get_pokemon(st.session_state.pokemon_seleccionado)
                 pokemon = parse_pokemon(data)
                 url_shiny = data.get('sprites',{}).get('front_shiny') or pokemon.sprite_url
                 color_tema= COLORES_TIPO_POKEMON.get(pokemon.types[0], '#FF0000')
@@ -247,68 +256,71 @@ def main():
                 st.divider()
                 st.subheader('🎴 Carta coleccionable')
                 carta_pokemon(pokemon, color_tema, url_shiny)
-                
+
+               
             except ValueError as e:
                 st.error(f'No se encontro el Pokemon: {e}')
             except ConnectionError as e:
                 st.error(f'Error de conexion: {e}')
             except Exception as e:
                 st.error(f'Error inesperado: {e}')
+                if st.button('Limpiar Error'):
+                    st.session_state.pokemon_seleccionado = None
+                    st.rerun()
 
-    
-
-    with st.sidebar:
-        st.header('🔍 Filtros Avanzados')
+    else: 
+        st.subheader('Galeria de Resultados')
         
-        tipo = st.multiselect('Tipo', list(COLORES_TIPO_POKEMON.keys()))
+        with st.sidebar:
+            st.header('🔍 Filtros Avanzados')
+            
+            tipo = st.multiselect('Tipo', list(COLORES_TIPO_POKEMON.keys()))
 
-        generaciones = {
+            generaciones = {
             'Todas': (1,1025),
             '1ra Gen (Kanto)': (1, 151),
             '2da Gen (Johto)': (152, 251),
             '3ra Gen (Hoenn)': (252, 386),
             '4ta Gen (Sinnoh)': (387, 493),
             '5ta Gen (Unova)': (494, 649)
-        }
+            }
 
-        generaciones_seleccionador = st.selectbox('Generacion', list(generaciones.keys()))
-        rango_id = generaciones[generaciones_seleccionador]
+            generaciones_seleccionador = st.selectbox('Generacion', list(generaciones.keys()))
+            rango_id = generaciones[generaciones_seleccionador]
 
-        ataque_minimo = st.slider('Ataque minimo', 0, 200, 0)
-        hp_minimo = st.slider('HP minimo', 0, 200, 0)
-        defensa_minima = st.slider('Defensa Minima', 0, 200, 0)
-        velocidad_minima = st.slider('Velocidad Minima', 0, 200, 0)
-        min_base_exp = st.slider('Min_base_exp', 0, 200, 0)
-        
-    minibiblioteca = cargar_minibiblioteca()
-    if not minibiblioteca:
-        st.warning(f"No se encontró el archivo. Por favor ejecuta el script de 'pokemon_filter_seed.py' primero")
-        return
-        
-    datos_filtrados = [
-        p for p in minibiblioteca
-        if (not tipo or any(t in p['types'] for t in tipo)) and
-        (rango_id[0] <= p['id'] <= rango_id[1]) and
-        (p['atk'] >= ataque_minimo) and
-        (p['hp'] >= hp_minimo) and
-        (p['def'] >= defensa_minima) and
-        (p['speed'] >= velocidad_minima) and
-        (p['base_exp'] >= min_base_exp)
-    ]
+            ataque_minimo = st.slider('Ataque minimo', 0, 200, 0)
+            hp_minimo = st.slider('HP minimo', 0, 200, 0)
+            defensa_minima = st.slider('Defensa Minima', 0, 200, 0)
+            velocidad_minima = st.slider('Velocidad Minima', 0, 200, 0)
+            min_base_exp = st.slider('Min_base_exp', 0, 200, 0)
+                
+        minibiblioteca = cargar_minibiblioteca()
+        if not minibiblioteca:
+            st.warning(f"No se encontró el archivo. Por favor ejecuta el script de 'pokemon_filter_seed.py' primero")
+            return
+            
+        datos_filtrados = [
+            p for p in minibiblioteca
+            if (not tipo or any(t in p['types'] for t in tipo)) and
+            (rango_id[0] <= p['id'] <= rango_id[1]) and
+            (p['atk'] >= ataque_minimo) and
+            (p['hp'] >= hp_minimo) and
+            (p['def'] >= defensa_minima) and
+            (p['speed'] >= velocidad_minima) and
+            (p['base_exp'] >= min_base_exp)
+        ]
 
-    if not datos_filtrados:
-        st.error(f'No se encuentra un Pokemon que coincida con los filtros.')
-    else:
-        cols = st.columns(5)
-        for i, p in enumerate(datos_filtrados[:50]):
-            with cols[i % 5]:
-                st.image(p['sprite'], caption=f"#{p['id']} {p['name'].capitalize()}")
-                if st.button('Ver Detalle', key=f"btn_{p['id']}", use_container_width=True):
-                    st.session_state.pokemon_id = p['name']
-                    st.rerun()
-                if st.session_state.get('pokemon_id'):
-                    st.divider()
-
+        if not datos_filtrados:
+            st.error(f'No se encuentra un Pokemon que coincida con los filtros.')
+        else:
+            cols = st.columns(5)
+            for i, p in enumerate(datos_filtrados[:50]):
+                with cols[i % 5]:
+                    st.image(p['sprite'], caption=f"#{p['id']} {p['name'].capitalize()}")
+                    if st.button('Ver Detalle', key=f"btn_{p['id']}"):
+                        st.session_state.pokemon_seleccionado = p['name']
+                        st.rerun()
+                    
 
 if __name__ == '__main__':
     main()
