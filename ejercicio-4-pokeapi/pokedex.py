@@ -92,10 +92,10 @@ def render_categoria(titulo, lista, icono):
         color = COLORES_TIPO_POKEMON.get(tipo, '#888')
         label = tipo.upper()
         if mult != 1.0:
-            label += f" x{int(mult) if mult >= 1 else mult}"
+            label = tipo.upper()
 
         html += f"""
-        <span style='
+        <span title="Recibe x {mult} daño" style='
             background-color: {color};
             color: white;
             padding: 6px 10px;
@@ -120,12 +120,45 @@ def cadena_evolutiva(client, pokemon_name):
         chain = evolucion_data['chain']
         evoluciones = []
         
-        def extraer_nombres(nodo):
-            evoluciones.append(nodo['species']['name'])
-            for sig in nodo['evolves_to']:
-                extraer_nombres(sig)
+        def extraer_nombres(nodo, resultado):
+            nombre = nodo['species']['name']
 
-        extraer_nombres(chain)       
+            for evo in nodo['evolves to']:
+                detalles = evo.get('evolution_details', [])
+
+                requisito = ""
+                if detalles:
+                    d = detalles[0]
+
+                    if d.get('min_level'):
+                        requisito = f"⬆️ Nivel {d['min_level']}"
+                    elif d.get('item'):
+                        requisito = f"🪨 {d['item']['name']}"
+                    elif d.get('trigger'):
+                        requisito = f"❤️ {d['trigger']['name']}"
+                resultado.append((nombre, requisito, evo['species']['name']))
+                extraer_nombres(evo, resultado)
+
+        for origen, requisito, destino in evoluciones:
+            st.markdown(f"""
+            <div style= '
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;>'
+                <b>{origen.capitalize()}</b>
+                <span style= '
+                    background: #222;
+                    color: white;
+                    padding: 5px 10px;
+                    border-radius: 10px;
+                    font-size: 0.8em;
+                '>
+                    ➜ {requisito}
+                </span>
+                <b>{destino.capitalize()}</b>
+            </div>
+            """, unsafe_allow_html=True)        
         
         cols = st.columns(len(evoluciones))
         for idx, name in enumerate(evoluciones):
@@ -378,11 +411,11 @@ def main():
                     defensas = interacciones(pokemon.types)
                     categorias = clasificar_defensas(defensas)
                     orden = [
-                        ('muy_debil', "🔥 Muy debil (x4 daño recibido)"),
-                        ('debil',  "⚠️ Débil (x2 daño recibido)"),
-                        ('resiste', "🛡️ Resiste (x0.5 daño recibido)"),
-                        ('muy_resiste', "🧱 Muy resistente (x0.25 daño recibido)"),
-                        ('inmune', "🚫 Muy resistente (x0.0 daño recibido)")
+                        ('muy_debil', "🔥 Muy debil"),
+                        ('debil',  "⚠️ Débil"),
+                        ('resiste', "🛡️ Resiste"),
+                        ('muy_resiste', "🧱 Muy resistente"),
+                        ('inmune', "🚫 Inmune")
                     ]                      
                     for clave, titulo in orden:
                         render_categoria(titulo, categorias[clave], "")
