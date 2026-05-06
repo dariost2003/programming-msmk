@@ -118,12 +118,18 @@ def cadena_evolutiva(client, pokemon_name):
         evolucion_url = species_data['evolution_chain']['url']
         evolucion_data = client.get(evolucion_url)
         chain = evolucion_data['chain']
+        
         evoluciones = []
         
         def extraer_nombres(nodo, resultado):
             nombre = nodo['species']['name']
 
-            for evo in nodo['evolves to']:
+            if not nodo['evolves_to']:
+                resultado.append((nombre, "", None))
+                return
+            
+            for evo in nodo['evolves_to']:
+                evo_name = evo['species']['name']
                 detalles = evo.get('evolution_details', [])
 
                 requisito = ""
@@ -132,43 +138,72 @@ def cadena_evolutiva(client, pokemon_name):
 
                     if d.get('min_level'):
                         requisito = f"⬆️ Nivel {d['min_level']}"
+                    elif d.get('min_happiness'):
+                        requisito = f"❤️ Felicidad {d['min_happiness']}"
+                    elif d.get('friendship'):
+                        requisito = f"🤝 Amistad"
                     elif d.get('item'):
                         requisito = f"🪨 {d['item']['name']}"
                     elif d.get('trigger'):
-                        requisito = f"❤️ {d['trigger']['name']}"
-                resultado.append((nombre, requisito, evo['species']['name']))
-                extraer_nombres(evo, resultado)
+                        requisito = f"⚡ {d['trigger']['name']}"
+                    elif d.get('time_of_day'):
+                        requisito = f"🌙 {d['time_of_day']}"
 
-        for origen, requisito, destino in evoluciones:
-            st.markdown(f"""
-            <div style= '
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;>'
-                <b>{origen.capitalize()}</b>
-                <span style= '
-                    background: #222;
-                    color: white;
-                    padding: 5px 10px;
-                    border-radius: 10px;
-                    font-size: 0.8em;
-                '>
-                    ➜ {requisito}
-                </span>
-                <b>{destino.capitalize()}</b>
-            </div>
-            """, unsafe_allow_html=True)        
+                resultado.append((nombre, requisito, evo_name))
+                
+                extraer_nombres(evo, resultado)
         
-        cols = st.columns(len(evoluciones))
-        for idx, name in enumerate(evoluciones):
-            with cols[idx]:
-                p_data = client.get_pokemon(name)
-                sprite = p_data['sprites']['front_default']
-                st.image(sprite, width=100)
-                if st.button(name.capitalize(), key=f'btn_evo_{name}'):
-                    st.session_state.pokemon_seleccionado = name
-                    st.rerun()
+        extraer_nombres(chain, evoluciones)
+        
+        if evoluciones:
+            st.markdown('### Evolución')
+
+            html = ""             
+            for origen, requisito, destino in evoluciones:
+                html += f"""
+                <div style= '
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    margin: 8px 0;'>
+                    <b>{origen.capitalize()}</b>
+                    <span style= '
+                        background: #222;
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 10px;
+                        font-size: 0.8em;'>
+                            ➜ {requisito if requisito else "Ultima Evolucion"}
+                    </span>
+                    <b>{destino.capitalize() if destino else ""}</b>
+                </div>
+                """
+            st.markdown(html, unsafe_allow_html=True)
+
+            nombres = set()
+            for o, _, d in evoluciones:
+                nombres.add(o)
+
+                if d:
+                    nombres.add(d)
+
+                   
+        
+            cols = st.columns(len(nombres))
+            
+            for idx, name in enumerate(sorted(nombres)):
+                with cols[idx]:
+                    p_data = client.get_pokemon(name)
+                    sprite = p_data['sprites']['front_default']
+                    st.image(sprite, width=100)
+                    
+                    if st.button(name.capitalize(), key=f'evo_{name}'):
+                        st.session_state.pokemon_seleccionado = name
+                        st.rerun()
+        else:
+            st.warning('No hay evoluciones')         
+
     except Exception as e:
         print(f'Informacion evolutiva no disponible. Error: {e}')
 
