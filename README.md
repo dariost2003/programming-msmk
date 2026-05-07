@@ -27,6 +27,4 @@ Repositorio con 5 ejercicios-taller para la fase de especializacion de la asigna
 - Python 3.10+
 - Se recomienda usar un entorno virtual: `python -m venv venv`
 =======
-# Pokedex_Project
-Este es mi primer repositorio donde programo un sitio web pokedex
 >>>>>>> 2f2cb750971cbc1e0860da7190d8c27fed10b5a3
