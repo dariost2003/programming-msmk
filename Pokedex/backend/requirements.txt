@@ -1,0 +1,8 @@
+requests
+streamlit
+plotly
+fastapi
+uvicorn
+requests
+Pydantic
+Pydantic-settings

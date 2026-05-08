@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Talleres Especializados de Python
 
 Repositorio con 5 ejercicios-taller para la fase de especializacion de la asignatura. Cada ejercicio es independiente e incluye codigo base (starter code) que debes ampliar segun las instrucciones.
@@ -28,3 +29,10 @@ Repositorio con 5 ejercicios-taller para la fase de especializacion de la asigna
 - Se recomienda usar un entorno virtual: `python -m venv venv`
 =======
 >>>>>>> 2f2cb750971cbc1e0860da7190d8c27fed10b5a3
+=======
+# programming-msmk
+Sesiones de Programming &amp; Coding - MSMK
+
+Enlace para las sesiones:
+meet.google.com/sho-jiya-tqk
+>>>>>>> 1da34266c3ff7ce0b760194b35ba4aa07c947a9e
