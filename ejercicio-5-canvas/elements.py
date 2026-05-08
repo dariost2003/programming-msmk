@@ -123,7 +123,6 @@ class TextElement(CanvasElement):
             f'{self.text}</text>'
         )
 
-
 # --- Flecha ---
 
 @dataclass
@@ -172,7 +171,6 @@ class FreeDrawElement(CanvasElement):
         - stroke-linecap="round" y stroke-linejoin="round" para suavizar
         """
         return ""
-
 
 # --- Widget ---
 
