@@ -36,7 +36,7 @@ class FilterService:
         if pokemon_type:
             filtered = [
                 p for p in filtered
-                if pokemon_type in p['types']:
+                if pokemon_type in p['types']
             ]
             
         if generation:
@@ -49,13 +49,13 @@ class FilterService:
         if min_attack:
             filtered = [
                 p for p in filtered
-                if p['atk'] >= min_attack::
+                if p['atk'] >= min_attack
             ]
         
         if min_defense:
             filtered = [
                 p for p in filtered
-                if p['defense'] >= min_defense:
+                if p['defense'] >= min_defense
             ]
         
         if min_hp:

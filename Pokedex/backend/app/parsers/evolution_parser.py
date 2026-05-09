@@ -1,36 +1,38 @@
 from app.models.pokemon import EvolutionNode
 
-def parse_evolution_chain(node: dict) -> EvolutionNode:
+def parse_evolution_chain(node):
 
-    name = node['species']['name']
+    evolution = {
+        'name': node['species']['name'],
+        'children': []}
 
-    children = [
-        parse_evolution_chain(child)
-        for child in node.get('evolves_to', [])
-    ]
+    evolves_to = node.get('evolves_to', [])
 
-    details = None
+    for evo in evolves_to:
 
-    if node.get('evolution-details'):
+        child = parse_evolution_chain(evo)
 
-        d= node['evolution_details'][0]
+        details = evo.get('evolution_details', [])
 
-        details = {
-            'min_level': d.get('min_level'),
-            'item': (d.get('item', {}).get('name')
-                     if d.get('item')
-                     else None
-                    ),
-            'trigger': (d.get('trigger', {}).get('name')
-                        if d.get('trigger')
+        if details:
+
+            d = details[0]
+
+            child['requirements'] = {
+                'min_level': d.get('min_level'),
+                'item': (d.get('item', {}).get('name')
+                        if d.get('item')
                         else None
-                    ),
-            'min_happiness': d.get('min_happiness'),
-            'time_of_day': d.get('time_of_day')            
-        }
+                        ),
+                'trigger': (d.get('trigger', {}).get('name')
+                            if d.get('trigger')
+                            else None
+                        ),
+                'min_happiness': d.get('min_happiness'),
+                'time_of_day': d.get('time_of_day')            
+            }
+        
+        evolution['children'].append(child)
 
-    return EvolutionNode(
-        name=name,
-        children=children,
-        evolution_details=details
-    )
+    return evolution
+        
