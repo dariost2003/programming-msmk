@@ -185,6 +185,8 @@
         Por cambios de docente se muda de repositorio, no se registran commits de nueva arquitectura y diseño
 
             1. version 1.0.0 no funcional
-                Se crean carpetas y arquitectura en vs code
+                Se crean carpetas y arquitectura en vs code, se empieza a mudar y cambiar archivos antiguos a archivos nuevos y escribir nuevo codigo
             2. version 1.0.1 no funcional
-                Se empieza a mudar y cambiar archivos antiguos a archivos nuevos y escribir nuevo codigo 
+                Commits: primer commit registrado con nueva arquitectura
+                
+                 
