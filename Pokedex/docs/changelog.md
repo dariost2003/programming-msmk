@@ -79,5 +79,7 @@ Commits:
 - Mejoras en la Interfaz de usuario.
 - Navegación separada por páginas.
 - Pokemón del día.
-### Version 1.2.1 funcional (actual)
+### Version 1.2.1 funcional
 - 6 Pokemones aleatorios para navegar, función agregada bajo la barra de busqueda de Pokemons
+### Version 2.0.0 funcional (actual)
+- Version pasa los tests unitarios de backend

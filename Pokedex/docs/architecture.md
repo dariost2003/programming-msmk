@@ -186,7 +186,7 @@ Estructura principal
             │       
             │         **RESPONSABILIDAD:** dataset local.
             │               - Contiene datos Pokemones de acuerdo a los filtros de nuestra app.
-            │               - Brinda los datos de forma resumida y modelada para presentar los datos de forma rapida cuando se coloque un filtro de busqueda.
+            │               - Brinda los datos de forma resumida y modelada para presentar los datos cuando se coloque un filtro de busqueda.
             │ 
             │
             ├──utils/
@@ -214,20 +214,29 @@ Estructura principal
             │               - .   
             │
             │           
-            └──dependencies/  
-                   └──dependencias.py:   
-                    
-                      **RESPONSABILIDAD** 
-                            - Crea infraestructura base.
-                            - Conecta el cliente con la cache.
-                            - Ensambla la logica de la app e inyecta infraestructura en services.
-                            - Centraliza instancias globales.
-
-             
+            ├──dependencies/  
+            │       └──dependencias.py:   
+            │        
+            │          **RESPONSABILIDAD** 
+            │                - Crea infraestructura base.
+            │                - Conecta el cliente con la cache.
+            │                - Ensambla la logica de la app e inyecta infraestructura en services.
+            │                - Centraliza instancias globales.
+            │
+            │
+            │
+            ├──tests/    
+            │      │
+            │      ├──test_parsers.py/test_pokeapi_client.py/test_services.py:
+            │      │    
+            │      │   **RESPONSABILIDADES:**
+            │      │         - Pruebas unitarias para determinar correcto funcionamiento de las principales funciones del backend.
+            │      │
+            │      │ 
 - Frontend/: aqui se presenta la arquitectura de nuestro frontend, esta sera nuestra capa de presentacion al cliente, el que orquesta la interfaz de usuario.
         │
         └──streamlit/
-                   ├──streamlit_app.py:
+                   ├──Pokedex.py:
                    │
                    │       **RESPONSABILIDADES:** 
                    │           - Funciona de ancla o punto principal de nuestro frontend.
@@ -286,35 +295,65 @@ Estructura principal
                    │               
                    │      
                    │      
-                   └──pages/
-                          ├──compare.py: **EN DESARROLLO**   
-                          │
-                          │  **RESPONSABILIDADES:** Pokemon vs Pokemon 
-                          │      - Compara las stats.
-                          │      - Muestra las diferencias entre Pokemones.
+                   ├──pages/
+                   │      ├──Comparador_de_Pokemons.py: **EN DESARROLLO** 
+                   │      │
+                   │      │  **RESPONSABILIDADES:** Pokemon vs Pokemon 
+                   │      │      - Compara las stats.
+                   │      │      - Muestra las diferencias entre Pokemones.
+                   │      │      
+                   │      ├──Home.py: 
+                   │      │
+                   │      │  **RESNPONSABILIDADES:** la pagina de presentacion de nuestra app.
+                   │      │        - Pagina inicial de interacicon del usuario.
+                   │      │        - Contiene las barras y filtros de busqueda.
+                   │      │        - Es la pagina a traves de la cual se navega en nuestra app.
+                   │      │     
+                   │      │ 
+                   │      ├──Busqueda_Individual.py: es el archivo que coordina las llamadas al backend. 
+                   │      │
+                   │      │  **RESNPONSABILIDADES:**
+                   │      │        - Ensambla la interfaz del usario a detalle.
+                   │      │
+                   │      │
+                   │      └──Constructor_de_equipos.py: **EN DESAROLLO** 
+                   │        
+                   │         **RESPONSABILIDADES:** construye equipos de acuerdo a estadisticas y preferencias.
+                   │               - Establece una logica en la UI de seleccion de Pokemones.
+                   │
+                   │     
+                   ├──utils/
+                   │       ├──constants.py:     
+                   │       │    **RESPONSABILIDADES:** reglas fijas de nuestro sistema.
+                   │       │          - Constantes de integracion, define endpoints, centraliza dependencias.
+                   │       │          - Contiene las reglas fijas de performance.
+                   │       │          - Reglas: idiomas aceptados.
+                   │       │     
+                   │       │
+                   │       ├──colors.py: 
+                   │       │      **RESPONSABILIDADES:** paleta de colores. 
+                   │       │          - Mapea los tipos de Pokemon y los empareja con un color.
+                   │       │          - Estandariza los colores en nuestro frontend.
+                   │       │          - Diccionario global de colores.   
+                   │       │
+                   │       │
+                   │       └──pokemon_logic.py:
+                   │               **RESPONSABILIDADES:** 
+                   │                  - Contiene funciones que se llaman para su uso en el frontend    
+                   │
+                   └──views/
+                          ├──home_view.py:     
+                          │    **RESPONSABILIDADES:** 
+                          │          - Tiene el renderizado y el diseño de la pagina Home.
                           │     
-                          │ 
-                          ├──home.py: 
                           │
-                          │  **RESNPONSABILIDADES:** la pagina de presentacion de nuestra app.
-                          │        - Pagina inicial de interacicon del usuario.
-                          │        - Contiene las barras y filtros de busqueda.
-                          │        - Es la pagina a traves de la cual se navega en nuestra app.
-                          │     
-                          │ 
-                          ├──pokemon_detail.py: es el archivo que coordina las llamadas al backend.
-                          │
-                          │  **RESNPONSABILIDADES:**
-                          │        - Ensambla la interfaz del usario a detalle.
+                          ├──pokemon_detail_view.py: 
+                          │      **RESPONSABILIDADES:** 
+                          │          - Tiene el renderizado y diseño de la página Busqueda Individual
                           │
                           │
-                          └──team_builder.py: **EN DESAROLLO** 
-                           
-                             **RESPONSABILIDADES:** construye equipos de acuerdo a estadisticas y preferencias.
-                                   - Establece una logica en la UI de seleccion de Pokemones.
-     
-                    
-                   
+                          
+- Docs/: Contiene los archivos api_design.md, architecture.md, backlog.md, changelog.md, psuedocode.md, roadmap.md.                  
                    
 # Tecnologias que usa la app
 
