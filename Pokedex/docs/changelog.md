@@ -71,7 +71,13 @@ Commits:
 - Migracion de codigo inicial.
 ### version 1.0.1 no funcional
 - Primer commit registrado, repositorio subido a GitHub, repositorio compartido.
-### Version 1.1.0 funcional (actual)
+### Version 1.1.0 funcional
 - Arquitectura completamente migrada.
 - Backend y Frontend funcionales.
 - Documentacion registrada.
+### Version 1.2.0 funcional
+- Mejoras en la Interfaz de usuario.
+- Navegación separada por páginas.
+- Pokemón del día.
+### Version 1.2.1 funcional (actual)
+- 6 Pokemones aleatorios para navegar, función agregada bajo la barra de busqueda de Pokemons

@@ -3,6 +3,7 @@
 from views.pokemon_detail_view import render_pokemon_detail, get_pokemon_of_the_day
 from api.backend_client import BackendClient
 from utils.constants import COLORS_TYPE_POKEMON
+from utils.pokemon_logic import render_random_pokemons, get_random_pokemons_id
 
 st.set_page_config(layout='wide')
 
@@ -27,6 +28,15 @@ else:
         st.session_state.pokemon_seleccionado = pokemon_name
         st.session_state.force_reset_home = True
         st.rerun()
+
+    if not search_clicked:
+
+        random_id = get_random_pokemons_id()
+
+        render_random_pokemons(client, random_id)
+
+        
+
        
 
     

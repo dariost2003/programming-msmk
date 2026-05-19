@@ -10,13 +10,12 @@ from components.combat_effectiveness import render_combat_effectiveness
 from components.evolution_chain import render_evo_chain
 from utils.constants import COLORS_TYPE_POKEMON
 from utils.colors import hexadecimal_to_rgba
-from utils.pokemon_logic import get_pokemon_of_the_day
+from utils.pokemon_logic import get_pokemon_of_the_day, get_random_pokemons_id
 
 def render_pokemon_detail(client: BackendClient, identifier: str) -> None:
     
     st.title('🔍 Buscar Pokemon')
     st.caption('Explora al detalle un Pokemon')
-
     st.markdown('---')
     st.subheader('⭐ Pokemon del momento')
 
@@ -80,9 +79,7 @@ def render_pokemon_detail(client: BackendClient, identifier: str) -> None:
     except Exception as e:
         
         st.warning(f'No se pudo cargar el Pokemon del día: {e}')            
-
-        
-    
+       
     with st.spinner('Consultando datos...'):
         try:
             pokemon = client.get_pokemon(identifier)
@@ -168,5 +165,3 @@ def render_pokemon_detail(client: BackendClient, identifier: str) -> None:
             st.error(f'Error de conexión: {e}')
         except Exception as e:
             st.error(f'Error inesperado: {e}')
-
-
