@@ -1,6 +1,7 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import streamlit as st
+import random
 
 from api.backend_client import BackendClient
 from components.radar_chart import render_radial_chart
@@ -9,8 +10,79 @@ from components.combat_effectiveness import render_combat_effectiveness
 from components.evolution_chain import render_evo_chain
 from utils.constants import COLORS_TYPE_POKEMON
 from utils.colors import hexadecimal_to_rgba
+from utils.pokemon_logic import get_pokemon_of_the_day
 
 def render_pokemon_detail(client: BackendClient, identifier: str) -> None:
+    
+    st.title('🔍 Buscar Pokemon')
+    st.caption('Explora al detalle un Pokemon')
+
+    st.markdown('---')
+    st.subheader('⭐ Pokemon del momento')
+
+    featured_pokemon = None
+
+
+    try:
+        
+        featured_pokemon = get_pokemon_of_the_day(client)
+    
+        if featured_pokemon:
+            name = featured_pokemon.get('name')
+            if not name:
+                raise ValueError('Pokemon del momento sin nombre')
+            
+            if name:
+                species = client.get_flavor_text(name)
+
+                flavor_text = species.get('flavor_text', 'Descripción no disponible')
+
+                col1, col2 = st.columns([1, 2])
+
+                with col1:
+                    st.image(featured_pokemon.get('sprite_url', ''), width=280)
+
+                with col2:
+
+                    pokemon_name = featured_pokemon.get("name", "")
+                    
+                    pokemon_id = featured_pokemon.get('id', 0)
+
+                    st.markdown(f'### {pokemon_name}')
+                    st.caption(f'#{pokemon_id:03}')
+
+                    types = featured_pokemon.get('types', [])
+                    type_cols = st.columns(len(types))
+
+                    for index, pokemon_type in enumerate(types):
+                        color = COLORS_TYPE_POKEMON.get(pokemon_type, '#888888')
+
+                        type_cols[index].markdown(
+                            f"""
+                            <div style="
+                                background-color:{color};
+                                color:white;
+                                padding:6px;
+                                border-radius:10px;
+                                text-align:center;
+                                font-weight:bold;
+                                margin-bottom:10px;
+                            ">
+                                {pokemon_type.capitalize()}
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+
+                    st.markdown(f""">*{flavor_text}*""")
+                    st.write('Busca este Pokemon para explorar sus estadísticas, evoluciones y habilidades')
+
+    except Exception as e:
+        
+        st.warning(f'No se pudo cargar el Pokemon del día: {e}')            
+
+        
+    
     with st.spinner('Consultando datos...'):
         try:
             pokemon = client.get_pokemon(identifier)
@@ -50,7 +122,18 @@ def render_pokemon_detail(client: BackendClient, identifier: str) -> None:
                 for index, pokemon_type in enumerate(types):
                     color = COLORS_TYPE_POKEMON.get(pokemon_type, '#888')
                     type_cols[index].markdown(
-                        f"<p style='background-color:{color}; color:white; padding:5px; border-radius:10px; text-align:center; font-weight:bold;'>{pokemon_type.capitalize()}</p>",
+                        f"""
+                        <p style="
+                            background-color:{color};
+                            color:white; 
+                            padding:5px; 
+                            border-radius:10px; 
+                            text-align:center; 
+                            font-weight:bold;
+                        ">
+                            {pokemon_type.capitalize()}
+                        </p>
+                        """,
                         unsafe_allow_html=True,
                     )
 

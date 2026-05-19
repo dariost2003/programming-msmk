@@ -189,7 +189,7 @@ def render_evo_chain(evolution_data: dict[str, object], client) -> None:
                     key=f'evo_{name}',
                     use_container_width=True
                 ):
-                    st.session_state.pokemon_seleccionado=name
+                    st.session_state.pokemon_seleccionado=name.lower()
                     st.rerun()
 
             except Exception:
@@ -201,5 +201,6 @@ def render_evo_chain(evolution_data: dict[str, object], client) -> None:
                     """,
                     unsafe_allow_html=True
                 )
+
 
     
