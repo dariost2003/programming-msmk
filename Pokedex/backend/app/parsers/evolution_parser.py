@@ -1,24 +1,22 @@
-from app.models.pokemon import EvolutionNode
+from app.models.pokemon_models import EvolutionNode
 
-def parse_evolution_chain(node):
+def parse_evolution_tree(node: dict) ->EvolutionNode:
 
-    evolution = {
-        'name': node['species']['name'],
-        'children': []}
+    children: list[EvolutionNode] = []
 
-    evolves_to = node.get('evolves_to', [])
+    for evo in node.get('evolves_to', []):
 
-    for evo in evolves_to:
-
-        child = parse_evolution_chain(evo)
+        parsed_child = parse_evolution_tree(evo)
 
         details = evo.get('evolution_details', [])
+
+        evolution_details = None
 
         if details:
 
             d = details[0]
 
-            child['requirements'] = {
+            evolution_details = {
                 'min_level': d.get('min_level'),
                 'item': (d.get('item', {}).get('name')
                         if d.get('item')
@@ -28,11 +26,24 @@ def parse_evolution_chain(node):
                             if d.get('trigger')
                             else None
                         ),
-                'min_happiness': d.get('min_happiness'),
-                'time_of_day': d.get('time_of_day')            
+                'min_happiness': (d.get('min_happiness', {})
+                                if d.get('min_happiness')
+                                else None),
+                'time_of_day': (d.get('time_of_day', {})
+                                if d.get('time_of_day')
+                                else None)            
             }
-        
-        evolution['children'].append(child)
+        children.append(
+            EvolutionNode(
+                name=parsed_child.name,
+                children=parsed_child.children,
+                evolution_details=evolution_details
+            )
+        )
 
-    return evolution
+    return EvolutionNode(    
+    name= node.get('species', {}).get('name', ""),
+    children=children,
+    )
+
         

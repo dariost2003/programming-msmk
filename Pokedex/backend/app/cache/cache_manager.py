@@ -2,13 +2,13 @@ import sqlite3
 import json
 import time
 
-from app.core.config import Settings
+from app.core.config import settings
 
 class CacheManager:
 
     def __init__(self):
 
-        self.db_path = Settings.CACHE_DB_PATH
+        self.db_path = settings.CACHE_DB_PATH
 
         self._init_db()
 
@@ -43,26 +43,39 @@ class CacheManager:
                     'DELETE FROM cache WHERE key=?',
                     (key,)
                 )
+                conn.commit()
 
                 return None
             
-            return json.loads(value)
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:
 
+                conn.execute(
+                    'DELETE FROM cache WHERE key=?',
+                    (key,)
+                )
+                
+                conn.commit()
+                return None
 
-    def set(self, key: str, value, ttl=3600):
+    def set(self, key: str, value, ttl: int | None=None):
 
+        ttl = ttl or settings.CACHE_TTL
         expires = time.time() + ttl
 
         with sqlite3.connect(self.db_path) as conn:
 
             conn.execute("""
-                        INSERT OR REPLACE INTO cache
-                        VALUES (? ? ?)
-                        """, (
-                            key,
-                            json.dumps(value),
-                            expires
-                        ))    
+                INSERT OR REPLACE INTO cache
+                VALUES (?, ?, ?)
+            """, (
+                key,
+                json.dumps(value),
+                expires
+            ))
+
+            conn.commit()    
 
     
  

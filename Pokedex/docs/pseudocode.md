@@ -1,19 +1,88 @@
-SECUENCIA LOGICA DE UNA PETICION ENTRE CAPAS
+INICIO
 
-1. USUARIO INGRESA AL SITIO WEB Y COLOCA EN LA BARRA DE BUSQUEDA DE POKEMONES INDIVIDUALES: 'PIKACHU' 
+Carga pagina principal
 
-CAPA DE PRESENTACION (app.py)
+    Lado izquierdo: filtros
+    Paginas del sitio web
 
-2. RECIBE PETICION Y PREGUNTA A CAPA LOGICA 'INFO DE PIKACHU, NECESITO A,B,C,D,ETC...'
+    Barra de busqueda
+    Galeria inicial de Pokemones (150 primeros Pokemones)
 
-CAPA LOGICA (api_client.py)(models.py)
+    retorna resultados
 
-3. RECIBE LA PETICION Y PREGUNTA 'CACHE, TIENES ESTA INFO?', 'NO?', 'API, DAME ESTA INFO', RECIBE LA INFO TIPO JSON, LA PARSEA Y LA ORGANIZA DE ACUERDO A LAS NECESIDADES DE LA PETICION DEL USUARIO
+Si usuario busca Pokemon, entonces
+    Nombre o ID, se busca Pokemon
 
-CADA DE DATOS (cache.py)(pokeapi)
+    Se muestra pokemon a detalle
 
-4. DATOS YA PARSEADOS, GUARDADOS LUEGO DE SER PRESENTADOS AL USUARIO, 'LA PROXIMA VEZ QUE CAPA LOGICA ME PIDA A PIKACHU, YA LO TENGO PARSEADO Y ORDENADO'
-5. DATOS CRUDOS DE POKEAPI, 'SI CACHE NO LO TIENE, PREGUNTAMELO, YO LO TENDRE'
+        COL1                               COL2                         COL3
+
+        Se muestra nombre o id             Grafico de radar             Relaciones de daño
+        Sprite del personaje                de estadisticas         
+        Flavor text
+        Tipos
+        Altura, Peso, Base exp
+
+        Cadena evolutiva
+        Se muestra la cadena evolutiva con los requisitos para subir de nivel
+
+        Seleccionar evolucion
+        Sprites de las evoluciones, seleccionables para ver detalles
+
+        Carta Pokemon
+        Info y sprite del Pokemon distribuidas en una carta Pokemon
+
+        Fin 
+
+Si usuario coloca 'Volver a galeria'
+
+        Se regresa a pagina principal
+        
+        Fin
+
+Si usuario coloca "Ver 'Pokemon'"
+
+        Le lleva a pagina al detalle de ese Pokemon de la evolucion
+
+        Fin
+
+Si usuario en paginca principal coloca Filtro
+
+        Se muestra en galeria los resultados de la busqueda filtrada
+
+        Fin
+
+Si usuario coloca en galeria
+
+        'Ver detalle'
+        Se dirige al detalle de Pokemon seleccionado
+
+        Fin
+
+Si usuario se dirige a pagina constructor de equipos
+
+        Barra de busqueda
+        Filtros de busqueda
+
+        Usuario selecciona un pokemon
+        Usuario coloca añadir a equipo
+
+        Se crea un equipo
+            Se puede modificar
+            Dar un nombre
+            Ver interacciones de Pokemones
+
+        Fin
+
+Si usuario se dirige a pagina comparador de Pokemones
+
+        Dos barras de busqueda
+        Usuario selecciona Pokemon 1 vs Pokemon 2
+        Se muestran caracteristicas de Pokemones
+        Grafico de radar con estadisticas comparativas
+
+        Fin
+FIN
 
 
 

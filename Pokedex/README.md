@@ -1,151 +1,77 @@
-# Ejercicio 4: PokeDex Avanzado con PokeAPI
+# Pokedex App
 
 ## Descripcion
+Esta es una app web de tipo Pokedex construida con Streamlit y FastAPI, que permite consultar y explorar todos los Pokemons, ver sus estadisticas, tipos, cadenas evolutivas y su carta coleccionable, usando la PokeAPI.
 
-En este ejercicio vas a construir un **PokeDex interactivo** usando la [PokeAPI](https://pokeapi.co/api/v2/), una API REST gratuita con datos de todos los Pokemon.
+## Vista principal
+![Home](image.png)
+![Vista al detalle](image-1.png)
+![Cadena evolutiva](image-2.png)
+![Carta coleccionable](image-3.png)
 
-El objetivo es practicar:
-- Consumo de APIs REST con `requests`
-- Manejo de respuestas JSON complejas
-- Cache de datos para optimizar peticiones
-- Construccion de interfaces con Streamlit
-- Visualizacion de datos con Plotly
 
-## Que se proporciona
+## Estructura del proyecto
 
-Ya tienes la base lista para trabajar:
+El proyecto está organizado en dos partes principales:
 
-| Archivo | Descripcion |
-|---------|-------------|
-| `api_client.py` | Cliente HTTP con cache, rate limiting y manejo de errores |
-| `cache.py` | Cache basado en SQLite para no repetir peticiones a la API |
-| `models.py` | Dataclasses y funciones para parsear las respuestas de la API |
-| `app_ejemplo.py` | App minima de ejemplo que demuestra como funciona todo |
-| `requirements.txt` | Dependencias del proyecto |
+- `backend/`: API en FastAPI que consume PokeAPI, aplica caché y expone los datos.
+- `frontend/streamlit/`: interfaz de usuario con Streamlit que consume el backend.
 
-## Como ejecutar el ejemplo
+## Cómo ejecutar el proyecto
 
 ```bash
-# 1. Instalar dependencias
-pip install -r requirements.txt
+# 1. Clona el repositorio en la rama julian_brito_duran_branch
+```bash
+git clone --single-branch --branch julian_brito_duran_branch [https://github.com/dariost2003/programming-msmk.git]
 
-# 2. Ejecutar la app de ejemplo
-streamlit run app_ejemplo.py
+# 2. Ir al directorio del proyecto
+cd Pokedex
+
+# 3. Crea tu entorno virtual
+python -m venv [nombre de tu repositorio, ej: .venv]
+
+# 4. Instalar dependencias en el entorno correcto
+cd backend
+cd .venv\Scripts\activate #activa el entorno virtual
+python -m pip install -r requirements.txt
+
+# 5. Iniciar el backend
+cd backend
+python -m uvicorn app.main:app --reload
+
+# 6. En otra terminal, iniciar la app Streamlit desde la raíz del proyecto
+cd ..
+streamlit run frontend/streamlit/streamlit_app.py
 ```
 
-Se abrira una ventana en tu navegador donde puedes buscar un Pokemon por nombre.
+Cuando el backend y el frontend estén activos, la app Streamlit podrá consultar el API y mostrar los datos del pokémon.
 
-## Tareas
+## Arquitectura
+Se construyó la aplicación con un arquitectura modular por capas, centrada en backend/frontend, la arquitectura principal consta de:
 
-Tu objetivo es crear un archivo `app.py` con el PokeDex completo. Debes implementar las siguientes funcionalidades:
+Pokedex/
+      |
+      |-Backend/
+      |-Frontend/
+      |-docs/
 
-### Tarea 1: Buscador avanzado
-- Busqueda por nombre (con autocompletado o sugerencias)
-- Busqueda por ID (rango de 1 a 1010)
-- Mostrar una lista de resultados con sprite, nombre y tipos
+Para visualizar la arquitectura al detalle, dirigirse a architecture.md
 
-### Tarea 2: Filtros
-- Filtrar Pokemon por tipo (fire, water, grass, etc.)
-- Filtrar por generacion (1-9)
-- Filtrar por rango de estadisticas (ej: "ataque mayor a 100")
-- Combinar multiples filtros
+## Caracteristicas de la app
+- Busqueda por nombre o id.
+- Visualizacion al detalle de Pokemon.
+- Sprite, estadisticas en grafico en radar, interacciones en combate, tipo, texto descriptivo.
+- Cadena evolutiva y sus requerimentos.
+- Carta Pokemon.
 
-### Tarea 3: Vista de detalle
-- Al seleccionar un Pokemon, mostrar toda su informacion:
-  - Sprite grande (artwork oficial)
-  - Estadisticas con grafico de radar o barras
-  - Tabla de tipos (debilidades y resistencias)
-  - Cadena evolutiva con sprites de cada etapa
-  - Descripcion del Pokemon (flavor text de la especie)
+## Tecnologías
+- Python 3.11
+- Streamlit
+- Requests
+- PokeAPI
 
-### Tarea 4: Comparador de Pokemon
-- Seleccionar 2 o 3 Pokemon para comparar
-- Grafico superpuesto de estadisticas
-- Tabla comparativa de tipos, habilidades, peso, altura
-- Indicar cual tiene ventaja de tipo sobre el otro
+## Contibuciones
+Me encantaría tu ayuda para mejorar el código, cualquier pull es bienvenido, para cambios importantes abre un issue por favor.
 
-### Tarea 5: Constructor de equipo
-- Permitir seleccionar 6 Pokemon para un equipo
-- Analisis de cobertura de tipos del equipo
-- Debilidades y resistencias combinadas
-- Estadisticas promedio del equipo
-- Sugerencias para mejorar el equipo (tipos no cubiertos)
 
-## Documentacion de la PokeAPI
 
-La documentacion completa esta en: https://pokeapi.co/docs/v2
-
-### Endpoints que vas a necesitar
-
-| Endpoint | Descripcion | Ejemplo |
-|----------|-------------|---------|
-| `pokemon/{name o id}` | Datos de un Pokemon | `pokemon/pikachu` |
-| `pokemon?limit=N&offset=M` | Lista paginada | `pokemon?limit=20&offset=0` |
-| `type/{name}` | Info de un tipo | `type/fire` |
-| `generation/{id}` | Pokemon por generacion | `generation/1` |
-| `pokemon-species/{name}` | Especie (flavor text, evolucion) | `pokemon-species/pikachu` |
-| `evolution-chain/{id}` | Cadena evolutiva | `evolution-chain/10` |
-
-### Estructura de la respuesta de `pokemon/{name}`
-
-Los campos mas utiles:
-
-```
-{
-  "id": 25,
-  "name": "pikachu",
-  "types": [{"type": {"name": "electric"}}],
-  "stats": [{"base_stat": 35, "stat": {"name": "hp"}}, ...],
-  "abilities": [{"ability": {"name": "static"}}, ...],
-  "height": 4,       // decimetros
-  "weight": 60,      // hectogramos
-  "base_experience": 112,
-  "sprites": {
-    "front_default": "url...",
-    "other": {"official-artwork": {"front_default": "url..."}}
-  }
-}
-```
-
-## Consejos
-
-### Rate limiting
-La PokeAPI es gratuita y no requiere autenticacion, pero tiene limites de uso. El `api_client.py` ya incluye una pausa minima entre peticiones. Ademas, el cache evita peticiones repetidas.
-
-### Como funciona el cache
-Cada vez que haces una peticion, el cliente:
-1. Busca en la base de datos SQLite si ya tiene esa respuesta
-2. Si la tiene y no ha expirado (1 hora por defecto), la devuelve directo
-3. Si no la tiene, hace la peticion HTTP real y guarda el resultado
-
-Esto significa que la primera vez sera lento, pero las siguientes seran instantaneas.
-
-### Usar los modelos
-No trabajes directamente con los diccionarios de la API. Usa las funciones de `models.py`:
-
-```python
-from api_client import PokeAPIClient
-from models import parse_pokemon, parse_type_info
-
-client = PokeAPIClient()
-
-# Obtener datos y parsear
-data = client.get_pokemon("charizard")
-pokemon = parse_pokemon(data)
-
-print(pokemon.name)          # "charizard"
-print(pokemon.types)         # ["fire", "flying"]
-print(pokemon.stats["attack"])  # 84
-```
-
-### Streamlit
-- Usa `st.columns()` para layouts de multiples columnas
-- Usa `st.tabs()` para organizar secciones
-- Usa `st.selectbox()` o `st.multiselect()` para filtros
-- Usa `st.session_state` para mantener el estado entre interacciones
-- Usa `@st.cache_data` para cachear funciones costosas en Streamlit
-
-### Plotly
-- `go.Bar` para graficos de barras
-- `go.Scatterpolar` para graficos de radar (ideal para comparar stats)
-- `go.Figure.add_trace()` para superponer multiples Pokemon en un grafico

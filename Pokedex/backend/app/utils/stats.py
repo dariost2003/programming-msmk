@@ -1,38 +1,39 @@
-TABLA_DE_INTERACCIONES = {
-    'normal': {'resist': ['ghost'], 'weak': ['fighting']},
-    'fire': {'resist':['fire', 'grass', 'ice', 'bug', 'steel', 'fairy'], 'weak': ['water', 'ground', 'rock']},
-    'water': {'resist':['fire', 'water', 'ice', 'steel'], 'weak': ['grass', 'electric']},
-    'grass': {'resist': ['water', 'ground', 'electric'], 'weak': ['fire', 'ice', 'poison', 'bug', 'flying']},
-    'electric': {'resist': ['electric', 'flying', 'steel'], 'weak': ['ground']},
-    'ice': {'resist': ['ice'], 'weak': ['fire', 'fighting', 'rock', 'steel']},
-    'fighting': {'resist': ['bug', 'rock', 'dark'], 'weak': ['flying', 'psychic', 'fairy']},
-    'poison': {'resist': ['grass', 'fighting', 'poison', 'bug', 'fairy'], 'weak': ['ground', 'psychic']},
-    'ground': {'resist': ['poison', 'rock'], 'weak': ['water', 'grass', 'ice'], 'inmune': ['electric']},
-    'flying': {'resist': ['grass', 'fighting', 'bug'], 'weak': ['electric', 'ice', 'rock'], 'inmune': ['ground']},
-    'psychic': {'resist': ['flying', 'psychic'], 'weak': ['bug', 'ghost', 'dark']},
-    'bug': {'resist': ['grass', 'fighting', 'ground'], 'weak': ['fire', 'flying', 'rock']},
-    'rock': {'resist': ['normal', 'fire', 'poison', 'flying'], 'weak': ['water', 'grass', 'fighting', 'ground', 'steel']},
-    'ghost': {'resist': ['poison', 'bug'], 'weak': ['ghost', 'dark'], 'inmune': ['normal', 'fighting']},
-    'dragon': {'resist': ['fire', 'water', 'grass', 'electric'], 'weak': ['ice', 'dragon', 'fairy']},
-    'dark': {'resist': ['ghost', 'dark'], 'weak': ['fighting', 'bug', 'fairy'], 'inmune': ['psychic']},
-    'steel': {'resist': ['normal', 'grass', 'ice', 'flying', 'psychic', 'bug', 'rock', 'dragon', 'steel', 'fairy'], 'weak': ['fire', 'fighting', 'ground'], 'inmune': ['poison']},
-    'fairy': {'resist': ['fighting', 'bug', 'dark'], 'weak': ['poison', 'steel'], 'inmune': ['dragon']}
-}
+from __future__ import annotations
 
-def interacciones(tipos):
-    multiplicadores = {t: 1.0 for t in TABLA_DE_INTERACCIONES.keys()}
-    for t in tipos:
-        data = TABLA_DE_INTERACCIONES.get(t, {})
-        for w in data.get('weak', []): multiplicadores[w] *= 2.0 
-        for r in data.get('resist', []): multiplicadores[r] *= 0.5
-        for i in data.get('inmune', []): multiplicadores[i] *= 0.0
-    return multiplicadores
+from app.core.constants import INTERACTIONS_DATESET
 
-def clasificar_defensas(defensas):
-    if not isinstance(defensas, dict):
-        raise TypeError('Se esperaba un dict en defensas')
+# Calcula las interacciones de daño de los Pokemon 
+# Ej: fire + flying -> water: x2, grass: x0.25, ground: x0
+
+def damage_interactions(types: list[str]) -> dict[str, float]:
+   
+    multipliers = {type: 1.0 for type in INTERACTIONS_DATESET.keys()}
     
-    categorias = {
+    for tipo in types:
+
+        data = INTERACTIONS_DATESET.get(tipo, {})
+
+        # Debilidades
+        for weak_type in data.get('weak', []): 
+            multipliers[weak_type] *= 2.0 
+
+        # Resistencias
+        for resist_type in data.get('resist', []): 
+            multipliers[resist_type] *= 0.5
+
+        # Inmunidades
+        for inmune_type in data.get('inmune', []): 
+            multipliers[inmune_type] *= 0.0
+
+    return multipliers
+
+# Clasifica los multiplicadores de la defensa en categorias para la interfaz de usuario
+def classify_defense(defenses: dict[str, float]) -> dict[str, list[tuple[str, float]]]:
+    
+    if not isinstance(defenses, dict):
+        raise TypeError('Se esperaba un diccionario en defensas')
+    
+    categories = {
         'muy_debil': [],
         'debil': [],
         'neutral': [],
@@ -40,19 +41,32 @@ def clasificar_defensas(defensas):
         'muy_resiste': [],
         'inmune': []
     }
-    for tipo, mult in defensas.items():
-        if abs(mult - 4.0) < 0.01:
-            categorias['muy_debil'].append((tipo, mult))
-        elif abs(mult - 2.0) < 0.01:
-            categorias['debil'].append((tipo,mult))
-        elif abs(mult - 1.0) < 0.01:
-            categorias['neutral'].append((tipo,mult))
-        elif abs(mult - 0.5) < 0.01:
-            categorias['resiste'].append((tipo,mult))
-        elif abs(mult - 0.25) < 0.01:
-            categorias['muy_resiste'].append((tipo,mult))
-        elif abs(mult - 0.0) < 0.01:
-            categorias['inmune'].append((tipo,mult))
+
+    for type, multipliers in defenses.items():
+        if abs(multipliers - 4.0) < 0.01:
+            categories['muy_debil'].append((type, multipliers))
+
+        elif abs(multipliers - 2.0) < 0.01:
+            categories['debil'].append((type,multipliers))
+
+        elif abs(multipliers - 1.0) < 0.01:
+            categories['neutral'].append((type,multipliers))
+
+        elif abs(multipliers - 0.5) < 0.01:
+            categories['resiste'].append((type,multipliers))
+
+        elif abs(multipliers - 0.25) < 0.01:
+            categories['muy_resiste'].append((type,multipliers))
+
+        elif abs(multipliers - 0.0) < 0.01:
+            categories['inmune'].append((type,multipliers))
     
-    return categorias
+    return categories
+
+# Función que unifica las defensas
+def get_offensive_brief(types: list[str]) -> dict:
+
+    defenses = damage_interactions(types)
+
+    return classify_defense(defenses)
     

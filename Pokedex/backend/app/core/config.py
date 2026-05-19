@@ -4,19 +4,18 @@ from typing import List
 class Settings(BaseSettings):
 
     APP_NAME: str = 'PokeDex Backend'
-
-    APP_VERSION: str = '1.0.0'
+    APP_VERSION: str = '1.1.0'
 
     API_PREFIX: str = '/api/v1'
 
+    # Infraestructura externa
     POKEAPI_BASE_URL: str = 'https://pokeapi.co/api/v2'
 
+    # Cache y rendimiento
     CACHE_TTL: int = 3600
-
     CACHE_DB_PATH: str = 'pokemon_cache.db'
 
     REQUEST_TIMEOUT: int = 15
-
     MIN_REQUEST_DELAY: float = 0.1
  
     ALLOWED_ORIGINS: List[str] = [
@@ -25,6 +24,6 @@ class Settings(BaseSettings):
     ]
 
     class Config:
-        env_file = '.venv'
+        env_file = '.env'
 
 settings = Settings()

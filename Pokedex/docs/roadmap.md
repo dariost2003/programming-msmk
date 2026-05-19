@@ -1,7 +1,19 @@
 
-# Roadmap
+# Roadmap - Pokedex
 
-## Fase 1
+## Objetivo general de la app
+Permitir consultar informacion de un Pokemon y entregar los datos de forma estructurada, rapida y con buen diseño
+
+## Objetivos especificos
+
+- Presentar una interfaz util, navegable e intuitiva.
+- Permitir la busqueda por nombre o ID del Pokemon.
+- Mostrar detalles del Pokemon: tipo, Descripción, interacciones de daño, arbol de evolucion, requisitos de evolucion, stats, habilidades.
+- Comparar Pokemones, mostrar diferenecias, ventajas o desventajas entre 2 Pokemones.
+- Construir equipos Pokemon, permitir al usuario crear equipos con varios Pokemons, de hasta 6 Pokemons y varios equipos, con sus respectivas interacciones y potencialidades.
+
+
+# Fase 1 (MVP: producto minimo viable 24/04/2026 - 04/05/2026)
 
  - Pokedex version 1
 
@@ -22,20 +34,14 @@
                 ├── pokedex.py
                 └── requirements.txt
 
-        1. version 1.0 non functional
-            Commits: 6797c1b - a07c81s
-        2. version 1.0.1 functional version
-            Commits: d744501 - 5f2f2f6
-        3.  version 1.0.2 functional version
-            Commits: 704b870 - 0a7bf43
-        4. version 1.1.0 functional version
-            Commits: 625afa0 - 0d14b9b
-        5. version 1.2.0 functional version
-            Commits: e89ecf - 22c6b01
-        6. version 1.3.0 functional version
-            Commits: e508999 - 7ab5c86
+## Funcionalidades:
+- Barra de busqueda basica de Pokemon
+- Cache basico
+- Vista a detalle inicial/simple Pokemon
+- Conexion a PokeAPI externa
 
-## Fase 2
+
+# Fase 2 (Nuevas funcionalidades adaptadas 05/05/2026)
 
  - Pokedex version 2
 
@@ -58,12 +64,14 @@
                 ├── pokemon_filter_seed.py
                 └── requirements.txt
 
-        1. version 2.0.0 functional version
-            Commits: d7937be
-        2. version 2.1.0 functional version
-            Commits: 58f2113
+## Nuevas funcionalidades:
+- Filtros de busqueda.
+- Mejora eficiencia en busqueda.
+- Scripts para generar dataset propio.
+- Mejoras de diseño de UI.
 
-## Fase 3
+
+# Fase 3 (Nuevas funcionalidades adaptadas 06/05/2026)
 
  - Pokedex version 3
 
@@ -85,14 +93,17 @@
                 ├── pokedex.py
                 ├── pokemon_filter_seed.py
                 └── requirements.txt
-        1. version 3.0.0 functional version
-            Commits: 644c837
-        2. version 3.1.0 functional version
-            Commits: b3f4777
-        3. version 3.1.1 functional version
-            Commits: bed690d
+       
+## Nuevas funcionalidades:
+- Cadena evolutiva añadida.
+- Relaciones de daño por tipo.
+- Flavor text.
+- Correccion de bugs.
+- Se optimiza la logica de busqueda.
+- Mejoras de diseño.
 
-## Fase 4
+
+# Fase 4 (Nueva arquitectura/diseño, cambio general/total, 08/05/2026- actual)
 
     Hasta el momento se presenta una aplicacion web funcional, esteticamente llamativa, sin embargo por motivos de orden y diseño se decide mudar de arquitectura y diseño por el siguiente:
 
@@ -141,7 +152,7 @@
         │   │   │   ├── stats.py
         │   │   │   └── formatters.py
         │   │   │
-        │   │   ├── dependencias/
+        │   │   ├── dependencies/
         │   │   │   └──dependencias.py
         │   │   │                                 
         │   │   └── requirements.txt
@@ -161,32 +172,100 @@
         │   │       │   ├──  evolution_chain.py
         │   │       │   ├──  combat_card.py
         │   │       │   ├──  radar_chart.py
-        │   │       │   └── type_badges.py
+        │   │       │   └──  type_badges.py
         │   │       └── pages/
         │   │           ├──  compare.py
         │   │           ├──  home.py
         │   │           ├──  pokemon_detail.py
         │   │           └── team_builder.py
         │   │
-        │   └── react-app/
+        │   └── react-app/ (mudar en proximas etapas)
         │       ├── src/
-        │       └── package.json
+        │       └── package.json 
         │
-        ├── .gitignore
+        │
         ├── docs/
         │     ├── architecture.md
         │     ├── pseudocode.md
         │     ├── roadmap.md
+        │     ├── readme.md
         │     └── api_design.md
-        │
-        ├── README.md
-        └── docker-compose.yml
-
+        └── .gitignore
+        
+        
+    
         Por cambios de docente se muda de repositorio, no se registran commits de nueva arquitectura y diseño
 
-            1. version 1.0.0 no funcional
-                Se crean carpetas y arquitectura en vs code, se empieza a mudar y cambiar archivos antiguos a archivos nuevos y escribir nuevo codigo
-            2. version 1.0.1 no funcional
-                Commits: primer commit registrado con nueva arquitectura
-                
-                 
+## Cambios Principales:
+- Migracion total a nueva arquitectura modular por capas.
+- Separacion frontend/backend.
+- Implementación de FastAPI.
+- Varios servicios.
+- Parsers independientes.
+- Reutilizacion de componentes.
+- Organizacion y diseño con vistas a escalar a otras apps de UI, storage, uso de servidores en nube.
+
+   
+    
+# Fase 5 (Comparador de pokemones, constructor de equipos, corto plazo 10 dias)
+
+## Funcionalidades previstas:
+### Comparador de Pokemon
+- Compara stats.
+- Compara tipos.
+- Compara graficos de radar.
+
+### Constructor de equipos
+- Permite añadir Pokemones a un equipo.
+- Da sugerencias de Pokemones para el equipo de acuerdo a debilidades y tipos.
+
+### Mejoras en la interfaz de usuario
+- Animaciones basicas.
+- Diseño adaptativo a diferentes pantallas.
+- Mejoras en las tarjetas Pokemon.
+
+### Dockerizacion
+- Crear nuestro Dockfile Backend.
+- Y construir el Docker Compose (carpeta ya creada).
+
+### Cache Mejorado
+- TTL cache
+- Invalidacion simple
+
+
+# Fase 6 (Migrar a React, mediano plazo)
+
+## Nuevas funcionalidades previstas:
+- React + Vite.
+- Axios API Client.
+- Migrar a SPA con React Router. 
+- Componentizacion avanzada en React.
+- Estado Global
+
+
+## Ideas Futuras
+- Sistema de favoritos.
+- Base de datos con login de usuarios.
+- Simulador de Combate.
+- Implementación de IA, para recomendaciones y preguntas.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
